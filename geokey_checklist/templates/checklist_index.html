@@ -1,0 +1,272 @@
+{% extends "base.html" %}
+
+{% block title %} | Extension: {{ name }}{% endblock %}
+
+{% block main %}
+<div class="page-header">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-6">
+                <h1 class="smaller"><a href="{% url 'geokey_checklist:index' %}">{{name}}</a></h1>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<div class="container">
+    {% include 'snippets/messages.html' %}
+
+    <div>
+      <input type="hidden" name="checklist-project-id" value="{{project.id}}" />
+      <table>
+        <tr>
+          <td>
+            <select name="checklists">
+              {% for category in categories %}
+                {% if category.name != "Fixit" %}
+                  {% if category.id|slugify == checklist_id %}
+                    <option value="{{category.id}}" selected>{{category.name}}</option>
+                  {% else %}
+                    <option value="{{category.id}}">{{category.name}}</option>
+                  {% endif %}
+                {% else %}
+                  <option value="{{category.id}}">{{category.name}}</option>
+                {% endif %}
+              {% endfor %}
+            </select>
+          </td>
+          <td>INFO</td>
+          <td><a href="" name="checklist-settings" class="btn btn-success btn-lg">Settings</a></td>
+          <td><a href="" name="checklist-add-checklist-link" class="btn btn-success btn-lg">New</a></td>
+          <td><a href="" name="checklist-edit-checklist-link" class="btn btn-success btn-lg">Edit</a></td>
+          <td><a href="" name="checklist-delete-checklist-link" class="btn btn-success btn-lg">Delete</a></td>
+        </tr>
+      </table>
+    </div>
+
+    <div>
+      <div name="checklist-descriptions">
+        <div name="checklist-description-empty">Add a new checklist by clicking the New button</div>
+        {% for category in categories %}
+          <div name="checklist-description{{category.id}}">{{category.description}}</div>
+        {% endfor %}
+      </div>
+
+      <div name="checklist-items-expired-div">
+        <h4>EXPIRED</h4>
+        <table name="checklist-items-expired">
+          <thead>
+          <tr>
+            <th></th>
+            <th>ITEM</th>
+            <th>QUANTITY</th>
+            <th>EXPIRY</th>
+            <th>TYPE</th>
+            <th>EDIT</th>
+            <th>DELETE</th>
+          </tr>
+          </thead>
+          <tbody>
+          </tbody>
+        </table>
+      </div>
+
+      <div name="checklist-items-expiring-soon-div">
+        <h4>EXPIRING SOON</h4>
+        <table name="checklist-items-expiring-soon">
+          <thead>
+          <tr>
+            <th></th>
+            <th>ITEM</th>
+            <th>QUANTITY</th>
+            <th>EXPIRY</th>
+            <th>TYPE</th>
+            <th>EDIT</th>
+            <th>DELETE</th>
+          </tr>
+          </thead>
+          <tbody>
+          </tbody>
+        </table>
+      </div>
+
+      <div name="checklist-items-essential-div">
+        <h4>ESSENTIAL</h4>
+        <table name="checklist-items-essential">
+          <thead>
+          <tr>
+            <th></th>
+            <th>ITEM</th>
+            <th>QUANTITY</th>
+            <th>EXPIRY</th>
+            <th>TYPE</th>
+            <th>EDIT</th>
+            <th>DELETE</th>
+          </tr>
+          </thead>
+          <tbody>
+          </tbody>
+        </table>
+      </div>
+
+      <div name="checklist-items-useful-div">
+        <h4>USEFUL</h4>
+        <table name="checklist-items-useful">
+          <thead>
+          <tr>
+            <th></th>
+            <th>ITEM</th>
+            <th>QUANTITY</th>
+            <th>EXPIRY</th>
+            <th>TYPE</th>
+            <th>EDIT</th>
+            <th>DELETE</th>
+          </tr>
+          </thead>
+          <tbody>
+          </tbody>
+        </table>
+      </div>
+
+      <div name="checklist-items-personal-div">
+        <h4>PERSONAL</h4>
+        <table name="checklist-items-personal">
+          <thead>
+          <tr>
+            <th></th>
+            <th>ITEM</th>
+            <th>QUANTITY</th>
+            <th>EXPIRY</th>
+            <th>TYPE</th>
+            <th>EDIT</th>
+            <th>DELETE</th>
+          </tr>
+          </thead>
+          <tbody>
+          </tbody>
+        </table>
+      </div>
+
+      <div name="checklist-items-children-div">
+        <h4>CHILDREN</h4>
+        <table name="checklist-items-children">
+          <thead>
+          <tr>
+            <th></th>
+            <th>ITEM</th>
+            <th>QUANTITY</th>
+            <th>EXPIRY</th>
+            <th>TYPE</th>
+            <th>EDIT</th>
+            <th>DELETE</th>
+          </tr>
+          </thead>
+          <tbody>
+          </tbody>
+        </table>
+      </div>
+
+      <div name="checklist-items-toddlers-div">
+        <h4>TODDLERS</h4>
+        <table name="checklist-items-toddlers">
+          <thead>
+          <tr>
+            <th></th>
+            <th>ITEM</th>
+            <th>QUANTITY</th>
+            <th>EXPIRY</th>
+            <th>TYPE</th>
+            <th>EDIT</th>
+            <th>DELETE</th>
+          </tr>
+          </thead>
+          <tbody>
+          </tbody>
+        </table>
+      </div>
+
+      <div name="checklist-items-infants-div">
+        <h4>INFANTS</h4>
+        <table name="checklist-items-infants">
+          <thead>
+          <tr>
+            <th></th>
+            <th>ITEM</th>
+            <th>QUANTITY</th>
+            <th>EXPIRY</th>
+            <th>TYPE</th>
+            <th>EDIT</th>
+            <th>DELETE</th>
+          </tr>
+          </thead>
+          <tbody>
+          </tbody>
+        </table>
+      </div>
+
+      <div name="checklist-items-pets-div">
+        <h4>PETS</h4>
+        <table name="checklist-items-pets">
+          <thead>
+          <tr>
+            <th></th>
+            <th>ITEM</th>
+            <th>QUANTITY</th>
+            <th>EXPIRY</th>
+            <th>TYPE</th>
+            <th>EDIT</th>
+            <th>DELETE</th>
+          </tr>
+          </thead>
+          <tbody>
+          </tbody>
+        </table>
+      </div>
+
+      <div name="checklist-items-custom-div">
+        <h4>CUSTOM</h4>
+        <table name="checklist-items-custom">
+          <thead>
+          <tr>
+            <th></th>
+            <th>ITEM</th>
+            <th>QUANTITY</th>
+            <th>EXPIRY</th>
+            <th>TYPE</th>
+            <th>EDIT</th>
+            <th>DELETE</th>
+          </tr>
+          </thead>
+          <tbody>
+          </tbody>
+        </table>
+      </div>
+
+      <!--div>
+        <table name="checklist-items">
+          <thead>
+          <tr>
+            <th></th>
+            <th>ITEM</th>
+            <th>QUANTITY</th>
+            <th>EXPIRY</th>
+            <th>TYPE</th>
+            <th>EDIT</th>
+            <th>DELETE</th>
+          </tr>
+          </thead>
+          <tbody>
+          </tbody>
+        </table>
+      </div-->
+
+      <a href="" name="checklist-add-item-link" class="btn btn-success btn-lg">Add an Item</a>
+    </div>
+
+</div>
+{% endblock %}
+
+{% block libraries %}
+<script src="/static/js/admin.ui.checklist.index.js"></script>
+{% endblock %}

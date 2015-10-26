@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+
+{% block title %} | Extension: {{ name }}{% endblock %}
+
+{% block main %}
+<div class="page-header">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-6">
+                <h1 class="smaller"><a href="{% url 'geokey_checklist:index' %}">{{name}}</a></h1>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<div class="container">
+    {% include 'snippets/messages.html' %}
+
+    <!--div class="row">
+        <div class="col-sm-4">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h6 class="item-info">Extension</h6>
+                    <h3>{{ name }}</h3>
+                </div>
+                <div class="list-group">
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-8">
+        </div>
+    </div-->
+
+  <div>
+    <h3 class="header">Edit checklist {{category.name}}</h3>
+      <form method="POST" action="{% url 'geokey_checklist:checklist_edit_checklist' category.project.id category.id %}" novalidate>
+        {% csrf_token %}
+
+        <div class="form-group">
+          <label for="checklistName" class="control-label">Name (required)</label>
+          <input type="text" class="form-control input-lg" name="checklistName" maxlength="100" value="{{category.name}}" required>
+        </div>
+
+        <div class="form-group">
+          <label for="checklistDescription" class="control-label">Description</label>
+          <input type="text" class="form-control input-lg" name="checklistDescription" maxlength="255" value="{{category.description}}">
+        </div>
+
+        <div id="map"></div>
+
+        <div class="form-group">
+          <input type="hidden" class="form-control input-lg" name="checklistLat" maxlength="100" value="{{checklist.latitude}}">
+        </div>
+
+        <div class="form-group">
+          <input type="hidden" class="form-control input-lg" name="checklistLng" maxlength="100" value="{{checklist.longitude}}">
+        </div>
+
+        <div class="form-group">
+          <label for="checklistNumPeople" class="control-label">Number of Adults</label>
+          <input type="text" class="form-control input-lg" name="checklistNumPeople" maxlength="100" value="{{checklist.numberofpeople}}">
+        </div>
+
+        <div class="form-group">
+          <label for="checklistNumChildren" class="control-label">Number of Children</label>
+          <input type="text" class="form-control input-lg" name="checklistNumChildren" maxlength="100" value="{{checklist.numberofchildren}}">
+        </div>
+
+        <div class="form-group">
+          <label for="checklistNumToddlers" class="control-label">Number of Toddlers</label>
+          <input type="text" class="form-control input-lg" name="checklistNumToddlers" maxlength="100" value="{{checklist.numberoftoddlers}}">
+        </div>
+
+        <div class="form-group">
+          <label for="checklistNumInfants" class="control-label">Number of Infants</label>
+          <input type="text" class="form-control input-lg" name="checklistNumInfants" maxlength="100" value="{{checklist.numberofinfants}}">
+        </div>
+
+        <div class="form-group">
+          <label for="checklistNumPets" class="control-label">Number of Pets</label>
+          <input type="text" class="form-control input-lg" name="checklistNumPets" maxlength="100" value="{{checklist.numberofpets}}">
+        </div>
+
+        <div class="form-group">
+          <button type="submit" name="editChecklist" class="btn btn-primary">Edit Checklist</button>
+        </div>
+    </form>
+
+    <a href="{% url 'geokey_checklist:index' category.id %}" name="checklist-cancel" class="btn btn-success btn-lg">Cancel</a>
+
+  </div>
+
+</div>
+{% endblock %}
+
+{% block libraries %}
+<script src="/static/js/admin.ui.checklist.edit_checklist.js"></script>
+<script async defer
+  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAFF1W599lUkZLUgKtsLxwQw1uSqVZ_vOo&callback=initMap">
+</script>
+{% endblock %}

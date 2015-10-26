@@ -1,0 +1,62 @@
+from django.conf.urls import patterns, url
+
+from views import (
+    IndexPage,
+    ChecklistIndexUpdateItems,
+    ChecklistAddItem,
+    ChecklistDeleteItem,
+    ChecklistEditItem,
+    ChecklistEditItemVal,
+    ChecklistAddChecklist,
+    ChecklistDeleteChecklist,
+    ChecklistEditChecklist,
+    ChecklistChecklistSettings
+)
+
+urlpatterns = patterns(
+    '',
+    url(
+        r'^admin/checklist/$',
+        IndexPage.as_view(),
+        name='index'),
+    url(
+        r'^admin/checklist/(?P<checklist_id>[0-9]+)/$',
+        IndexPage.as_view(),
+        name='index'),
+    url(
+        r'^admin/checklist/settings/(?P<project_id>[0-9]+)/$',
+        ChecklistChecklistSettings.as_view(),
+        name='checklist_settings'),
+    url(
+        r'^admin/checklist/(?P<project_id>[0-9]+)/(?P<checklist_id>[0-9]+)/items/$',
+        ChecklistIndexUpdateItems.as_view(),
+        name='checklist_index_update_items'),
+    url(
+        r'^admin/checklist/(?P<project_id>[0-9]+)/(?P<checklist_id>[0-9]+)/add-item/$',
+        ChecklistAddItem.as_view(),
+        name='checklist_add_item'),
+    url(
+        r'^admin/checklist/(?P<project_id>[0-9]+)/(?P<checklist_id>[0-9]+)/edit-item/(?P<checklist_item_id>[0-9]+)/$',
+        ChecklistEditItem.as_view(),
+        name='checklist_edit_item'),
+    url(
+        r'^admin/checklist/(?P<project_id>[0-9]+)/(?P<checklist_id>[0-9]+)/edit-item-val/(?P<checklist_item_id>[0-9]+)/(?P<checklist_item_field_key>[\w-]+)/(?P<checklist_item_field_val>[\w-]+)/$',
+        ChecklistEditItemVal.as_view(),
+        name='checklist_edit_item_val'),
+    url(
+        r'^admin/checklist/(?P<project_id>[0-9]+)/(?P<checklist_id>[0-9]+)/delete-item/(?P<checklist_item_id>[0-9]+)/$',
+        ChecklistDeleteItem.as_view(),
+        name='checklist_delete_item'),
+    url(
+        r'^admin/checklist/add-checklist/(?P<project_id>[0-9]+)/$',
+        ChecklistAddChecklist.as_view(),
+        name='checklist_add_checklist'),
+    url(
+        r'^admin/checklist/(?P<project_id>[0-9]+)/edit-checklist/(?P<checklist_id>[0-9]+)/$',
+        ChecklistEditChecklist.as_view(),
+        name='checklist_edit_checklist'),
+    url(
+        r'^admin/checklist/(?P<project_id>[0-9]+)/delete-checklist/(?P<checklist_id>[0-9]+)/$',
+        ChecklistDeleteChecklist.as_view(),
+        name='checklist_delete_checklist'),
+)

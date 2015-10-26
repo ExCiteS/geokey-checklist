@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+
+{% block title %} | Extension: {{ name }}{% endblock %}
+
+{% block main %}
+<div class="page-header">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-6">
+                <h1 class="smaller"><a href="{% url 'geokey_checklist:index' %}">{{name}}</a></h1>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<div class="container">
+    {% include 'snippets/messages.html' %}
+
+    <!--div class="row">
+        <div class="col-sm-4">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h6 class="item-info">Extension</h6>
+                    <h3>{{ name }}</h3>
+                </div>
+                <div class="list-group">
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-8">
+        </div>
+    </div-->
+
+  <div>
+    <h3 class="header">SETTINGS</h3>
+      <form method="POST" action="{% url 'geokey_checklist:checklist_settings' project.id %}" novalidate>
+        {% csrf_token %}
+
+        <div class="form-group">
+          <label for="checklistRemindersOn" class="control-label">Reminders On? (required)</label>
+          {% if checklist_settings.reminderson == True %}
+            <input type="checkbox" class="form-control input-lg" name="checklistRemindersOn" checked required/>
+          {% else %}
+            <input type="checkbox" class="form-control input-lg" name="checklistRemindersOn" required />
+          {% endif %}
+        </div>
+
+        <div class ="form-group">
+          <label for="checklistReminderBeforeExpiration" class="control-label">Reminder Before Items Expire</label>
+          <select class="form-control input-lg" name="checklistReminderBeforeExpiration">
+            {% if checklist_settings.frequencybeforeexpiration == "one_week" %}
+              <option value="one_week" selected>One Week</option>
+            {% else %}
+              <option value="one_week">One Week</option>
+            {% endif %}
+
+            {% if checklist_settings.frequencybeforeexpiration == "one_day" %}
+              <option value="one_day" selected>One Day</option>
+            {% else %}
+              <option value="one_day">One Day</option>
+            {% endif %}
+
+            {% if checklist_settings.frequencybeforeexpiration == "never" %}
+              <option value="never" selected>Never</option>
+            {% else %}
+              <option value="never">Never</option>
+            {% endif %}
+          </select>
+        </div>
+
+        <div class ="form-group">
+          <label for="checklistReminderAfterExpiration" class="control-label">Reminder After Items Expire</label>
+          <select class="form-control input-lg" name="checklistReminderAfterExpiration">
+            {% if checklist_settings.frequencyonexpiration == "once" %}
+              <option value="once" selected>Once</option>
+            {% else %}
+              <option value="once">Once</option>
+            {% endif %}
+
+            {% if checklist_settings.frequencyonexpiration == "twice" %}
+              <option value="twice" selected>Twice</option>
+            {% else %}
+              <option value="twice">Twice</option>
+            {% endif %}
+
+            {% if checklist_settings.frequencyonexpiration == "never" %}
+              <option value="never" selected>Never</option>
+            {% else %}
+              <option value="never">Never</option>
+            {% endif %}
+          </select>
+        </div>
+
+        <div class="form-group">
+          <button type="submit" name="saveChecklistSettings" class="btn btn-primary">Save</button>
+        </div>
+    </form>
+
+    <a href="{% url 'geokey_checklist:index' %}" name="checklist-cancel" class="btn btn-success btn-lg">Cancel</a>
+
+  </div>
+
+</div>
+{% endblock %}
+
+{% block libraries %}
+
+{% endblock %}

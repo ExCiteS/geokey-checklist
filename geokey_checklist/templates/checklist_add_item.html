@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+
+{% block title %} | Extension: {{ name }}{% endblock %}
+
+{% block main %}
+<div class="page-header">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-6">
+                <h1 class="smaller"><a href="{% url 'geokey_checklist:index' %}">{{name}}</a></h1>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<div class="container">
+    {% include 'snippets/messages.html' %}
+
+    <!--div class="row">
+        <div class="col-sm-4">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h6 class="item-info">Extension</h6>
+                    <h3>{{ name }}</h3>
+                </div>
+                <div class="list-group">
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-8">
+        </div>
+    </div-->
+
+  <div>
+    <h3 class="header">Create new checklist item for {{category.name}}</h3>
+      <form method="POST" action="{% url 'geokey_checklist:checklist_add_item' category.project.id category.id %}" novalidate>
+        {% csrf_token %}
+
+        <div class="form-group">
+          <label for="checklistItemName" class="control-label">Name (required)</label>
+          <input type="text" class="form-control input-lg" name="checklistItemName" maxlength="100"  required>
+        </div>
+
+        <div class="form-group">
+          <label for="checklistItemQuantityFactor" class="control-label">QuantityFactor (required)</label>
+          <input type="text" class="form-control input-lg" name="checklistItemQuantityFactor" maxlength="100" value="1"  required>
+        </div>
+
+        <div class ="form-group">
+          <label for="checklistItemExpiry" class="control-label">Expiry</label>
+          <select class="form-control input-lg" name="checklistItemExpiry">
+            <option value="1">1 day</option>
+            <option value="7">1 week</option>
+            <option value="30">1 month</option>
+          </select>
+        </div>
+
+        <div class ="form-group">
+          <label for="checklistItemType" class="control-label">Item Type</label>
+          <select class="form-control input-lg" name="checklistItemType">
+            <option value="Essential">Essential</option>
+            <option value="Useful">Useful</option>
+            <option value="Personal">Personal</option>
+            <option value="Children">Children</option>
+            <option value="Toddlers">Toddlers</option>
+            <option value="Infants">Infants</option>
+            <option value="Pets">Pets</option>
+            <option value="Custom">Custom</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <button type="submit" name="createChecklistItem" class="btn btn-primary">Create Checklist Item</button>
+        </div>
+    </form>
+
+    <a href="{% url 'geokey_checklist:index' category.id %}" name="checklist-cancel" class="btn btn-success btn-lg">Cancel</a>
+
+  </div>
+
+</div>
+{% endblock %}
+
+{% block libraries %}
+
+{% endblock %}

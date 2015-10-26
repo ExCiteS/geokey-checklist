@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+
+{% block title %} | Extension: {{ name }}{% endblock %}
+
+{% block main %}
+<div class="page-header">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-6">
+                <h1 class="smaller"><a href="{% url 'geokey_checklist:index' %}">{{name}}</a></h1>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<div class="container">
+    {% include 'snippets/messages.html' %}
+
+    <!--div class="row">
+        <div class="col-sm-4">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h6 class="item-info">Extension</h6>
+                    <h3>{{ name }}</h3>
+                </div>
+                <div class="list-group">
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-8">
+        </div>
+    </div-->
+
+  <div>
+    <h3 class="header">Create new checklist</h3>
+      <form method="POST" action="{% url 'geokey_checklist:checklist_add_checklist' project_id %}" novalidate>
+        {% csrf_token %}
+
+        <div class="form-group">
+          <label for="checklistName" class="control-label">Name (required)</label>
+          <input type="text" class="form-control input-lg" name="checklistName" maxlength="100"  required>
+        </div>
+
+        <div class="form-group">
+          <label for="checklistDescription" class="control-label">Description</label>
+          <input type="text" class="form-control input-lg" name="checklistDescription" maxlength="255">
+        </div>
+
+        <div class ="form-group">
+          <label for="checklistType" class="control-label">Item Type</label>
+          <select class="form-control input-lg" name="checklistType">
+            <option value="Home">Home</option>
+            <option value="Work">Work</option>
+            <option value="School">School</option>
+            <option value="Vehicle">Vehicle</option>
+            <option value="PlaceOfWorship">Place Of Worship</option>
+            <option value="Blank">Blank</option>
+          </select>
+        </div>
+
+        <div id="map"></div>
+
+        <div class="form-group">
+          <input type="hidden" class="form-control input-lg" name="checklistLat" maxlength="100">
+        </div>
+
+        <div class="form-group">
+          <input type="hidden" class="form-control input-lg" name="checklistLng" maxlength="100">
+        </div>
+
+        <div class="form-group">
+          <label for="checklistNumPeople" class="control-label">Number of Adults</label>
+          <input type="text" class="form-control input-lg" name="checklistNumPeople" maxlength="100">
+        </div>
+
+        <div class="form-group">
+          <label for="checklistNumChildren" class="control-label">Number of Children</label>
+          <input type="text" class="form-control input-lg" name="checklistNumChildren" maxlength="100">
+        </div>
+
+        <div class="form-group">
+          <label for="checklistNumToddlers" class="control-label">Number of Toddlers</label>
+          <input type="text" class="form-control input-lg" name="checklistNumToddlers" maxlength="100">
+        </div>
+
+        <div class="form-group">
+          <label for="checklistNumInfants" class="control-label">Number of Infants</label>
+          <input type="text" class="form-control input-lg" name="checklistNumInfants" maxlength="100">
+        </div>
+
+        <div class="form-group">
+          <label for="checklistNumPets" class="control-label">Number of Pets</label>
+          <input type="text" class="form-control input-lg" name="checklistNumPets" maxlength="100">
+        </div>
+
+        <div class="form-group">
+          <button type="submit" name="createChecklist" class="btn btn-primary">Create Checklist</button>
+        </div>
+    </form>
+
+    <a href="{% url 'geokey_checklist:index' %}" name="checklist-cancel" class="btn btn-success btn-lg">Cancel</a>
+
+  </div>
+
+</div>
+{% endblock %}
+
+{% block libraries %}
+<script src="/static/js/admin.ui.checklist.add_checklist.js"></script>
+<script async defer
+  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAFF1W599lUkZLUgKtsLxwQw1uSqVZ_vOo&callback=initMap">
+</script>
+{% endblock %}

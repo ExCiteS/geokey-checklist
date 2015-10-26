@@ -1,0 +1,2 @@
+recursive-include geokey_checklist/templates *
+recursive-include geokey_checklist/migrations *
