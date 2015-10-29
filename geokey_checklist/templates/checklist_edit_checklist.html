@@ -48,38 +48,39 @@
         </div>
 
         <div id="map"></div>
+        <div>Please click on the map to place a point to represent the location for the checklist. Should you make an error, simply click again on the map to place a new point in a new location.</div>
 
         <div class="form-group">
-          <input type="hidden" class="form-control input-lg" name="checklistLat" maxlength="100" value="{{checklist.latitude}}">
+          <input type="hidden" class="form-control input-lg" name="checklistLat" maxlength="100" value="{{checklist.latitude}}" required>
         </div>
 
         <div class="form-group">
-          <input type="hidden" class="form-control input-lg" name="checklistLng" maxlength="100" value="{{checklist.longitude}}">
+          <input type="hidden" class="form-control input-lg" name="checklistLng" maxlength="100" value="{{checklist.longitude}}" required>
         </div>
 
         <div class="form-group">
-          <label for="checklistNumPeople" class="control-label">Number of Adults</label>
-          <input type="text" class="form-control input-lg" name="checklistNumPeople" maxlength="100" value="{{checklist.numberofpeople}}">
+          <label for="checklistNumPeople" class="control-label">Number of Adults (required)</label>
+          <input type="number" class="form-control input-lg" name="checklistNumPeople" min="0" value="{{checklist.numberofpeople}}" required>
         </div>
 
         <div class="form-group">
-          <label for="checklistNumChildren" class="control-label">Number of Children</label>
-          <input type="text" class="form-control input-lg" name="checklistNumChildren" maxlength="100" value="{{checklist.numberofchildren}}">
+          <label for="checklistNumChildren" class="control-label">Number of Children (required)</label>
+          <input type="number" class="form-control input-lg" name="checklistNumChildren" min="0" value="{{checklist.numberofchildren}}" required>
         </div>
 
         <div class="form-group">
-          <label for="checklistNumToddlers" class="control-label">Number of Toddlers</label>
-          <input type="text" class="form-control input-lg" name="checklistNumToddlers" maxlength="100" value="{{checklist.numberoftoddlers}}">
+          <label for="checklistNumToddlers" class="control-label">Number of Toddlers (required)</label>
+          <input type="number" class="form-control input-lg" name="checklistNumToddlers" min="0" value="{{checklist.numberoftoddlers}}" required>
         </div>
 
         <div class="form-group">
-          <label for="checklistNumInfants" class="control-label">Number of Infants</label>
-          <input type="text" class="form-control input-lg" name="checklistNumInfants" maxlength="100" value="{{checklist.numberofinfants}}">
+          <label for="checklistNumInfants" class="control-label">Number of Infants (required)</label>
+          <input type="number" class="form-control input-lg" name="checklistNumInfants" min="0" value="{{checklist.numberofinfants}}" required>
         </div>
 
         <div class="form-group">
-          <label for="checklistNumPets" class="control-label">Number of Pets</label>
-          <input type="text" class="form-control input-lg" name="checklistNumPets" maxlength="100" value="{{checklist.numberofpets}}">
+          <label for="checklistNumPets" class="control-label">Number of Pets (required)</label>
+          <input type="number" class="form-control input-lg" name="checklistNumPets" min="0" value="{{checklist.numberofpets}}" required>
         </div>
 
         <div class="form-group">
@@ -96,6 +97,7 @@
 
 {% block libraries %}
 <script src="/static/js/admin.ui.checklist.edit_checklist.js"></script>
+<script src="/static/js/admin.ui.forms.validate.js"></script>
 <script async defer
   src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAFF1W599lUkZLUgKtsLxwQw1uSqVZ_vOo&callback=initMap">
 </script>

@@ -52,6 +52,8 @@ class ChecklistItem(models.Model):
     field = models.ForeignKey('categories.Field')
     creator = models.ForeignKey(settings.AUTH_USER_MODEL)
     #checklisttype = models.CharField(choices=TYPE, max_length=100)
+    checklistitemdescription = models.CharField(max_length=100)
+    checklistitemurl = models.CharField(max_length=255)
     checklistitemtype = models.CharField(choices=ITEM_TYPE, default=ITEM_TYPE.Custom, max_length=100)
     quantityfactor = models.IntegerField()
     quantity = models.IntegerField()

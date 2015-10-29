@@ -39,12 +39,12 @@
 
         <div class="form-group">
           <label for="checklistName" class="control-label">Name (required)</label>
-          <input type="text" class="form-control input-lg" name="checklistName" maxlength="100"  required>
+          <input type="text" class="form-control input-lg" name="checklistName" maxlength="100"  required />
         </div>
 
         <div class="form-group">
           <label for="checklistDescription" class="control-label">Description</label>
-          <input type="text" class="form-control input-lg" name="checklistDescription" maxlength="255">
+          <input type="text" class="form-control input-lg" name="checklistDescription" maxlength="255" />
         </div>
 
         <div class ="form-group">
@@ -55,43 +55,44 @@
             <option value="School">School</option>
             <option value="Vehicle">Vehicle</option>
             <option value="PlaceOfWorship">Place Of Worship</option>
-            <option value="Blank">Blank</option>
+            <option value="Blank" selected>Blank</option>
           </select>
         </div>
 
         <div id="map"></div>
+        <div>Please click on the map to place a point to represent the location for the checklist. Should you make an error, simply click again on the map to place a new point in a new location.</div>
 
         <div class="form-group">
-          <input type="hidden" class="form-control input-lg" name="checklistLat" maxlength="100">
+          <input type="hidden" class="form-control input-lg" name="checklistLat" maxlength="100" value="47.6097" required />
         </div>
 
         <div class="form-group">
-          <input type="hidden" class="form-control input-lg" name="checklistLng" maxlength="100">
+          <input type="hidden" class="form-control input-lg" name="checklistLng" maxlength="100" value="-122.3331" required />
         </div>
 
         <div class="form-group">
-          <label for="checklistNumPeople" class="control-label">Number of Adults</label>
-          <input type="text" class="form-control input-lg" name="checklistNumPeople" maxlength="100">
+          <label for="checklistNumPeople" class="control-label">Number of Adults (required)</label>
+          <input type="number" class="form-control input-lg" name="checklistNumPeople" min="0" value="0" required />
         </div>
 
         <div class="form-group">
-          <label for="checklistNumChildren" class="control-label">Number of Children</label>
-          <input type="text" class="form-control input-lg" name="checklistNumChildren" maxlength="100">
+          <label for="checklistNumChildren" class="control-label">Number of Children (required)</label>
+          <input type="number" class="form-control input-lg" name="checklistNumChildren" min="0" value="0" required />
         </div>
 
         <div class="form-group">
-          <label for="checklistNumToddlers" class="control-label">Number of Toddlers</label>
-          <input type="text" class="form-control input-lg" name="checklistNumToddlers" maxlength="100">
+          <label for="checklistNumToddlers" class="control-label">Number of Toddlers (required)</label>
+          <input type="number" class="form-control input-lg" name="checklistNumToddlers" min="0" value="0" required />
         </div>
 
         <div class="form-group">
-          <label for="checklistNumInfants" class="control-label">Number of Infants</label>
-          <input type="text" class="form-control input-lg" name="checklistNumInfants" maxlength="100">
+          <label for="checklistNumInfants" class="control-label">Number of Infants (required)</label>
+          <input type="number" class="form-control input-lg" name="checklistNumInfants" min="0" value="0" required />
         </div>
 
         <div class="form-group">
-          <label for="checklistNumPets" class="control-label">Number of Pets</label>
-          <input type="text" class="form-control input-lg" name="checklistNumPets" maxlength="100">
+          <label for="checklistNumPets" class="control-label">Number of Pets (required)</label>
+          <input type="number" class="form-control input-lg" name="checklistNumPets" min="0" value="0" required />
         </div>
 
         <div class="form-group">
@@ -108,6 +109,7 @@
 
 {% block libraries %}
 <script src="/static/js/admin.ui.checklist.add_checklist.js"></script>
+<script src="/static/js/admin.ui.forms.validate.js"></script>
 <script async defer
   src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAFF1W599lUkZLUgKtsLxwQw1uSqVZ_vOo&callback=initMap">
 </script>

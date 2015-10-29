@@ -118,9 +118,9 @@ class ChecklistChecklistSettings(TemplateView):
         project = Project.objects.get_single(self.request.user, project_id)
         checklist_settings = ChecklistSettings.objects.get(project=project)
 
-        reminderson_checkbox = self.request.POST.get('checklistRemindersOn')
+        reminderson_radio = self.request.POST.get('checklistRemindersOn')
         reminderson = True
-        if reminderson_checkbox == None:
+        if reminderson_radio == "No":
             reminderson = False
         frequencybeforeexpiration = self.request.POST.get('checklistReminderBeforeExpiration')
         frequencyonexpiration = self.request.POST.get('checklistReminderAfterExpiration')
@@ -183,6 +183,8 @@ class ChecklistAddItem(TemplateView):
 
         checklistitemtype = self.request.POST.get('checklistItemType')
 
+        checklistitemdescription = self.request.POST.get('checklistItemDescription')
+        checklistitemurl = self.request.POST.get('checklistItemURL')
         quantityfactor = self.request.POST.get('checklistItemQuantityFactor')
         quantity = 1 * quantityfactor
         expiryfactor = self.request.POST.get('checklistItemExpiry')
@@ -198,6 +200,7 @@ class ChecklistAddItem(TemplateView):
             field=field,
             creator=creator,
             #checklisttype=checklisttype,
+            checklistitemdescription=checklistitemdescription,
             checklistitemtype=checklistitemtype,
             quantityfactor=quantityfactor,
             quantity=quantity,
@@ -205,7 +208,7 @@ class ChecklistAddItem(TemplateView):
             expiry=expiry,
             haveit=haveit
         )
-        successful_message = checklist_item.name," has been added."
+        successful_message = checklist_item.name + " has been added."
         messages.success(self.request, successful_message)
         return redirect('geokey_checklist:index', checklist_id=category.id)
 
@@ -215,7 +218,7 @@ class ChecklistDeleteItem(LoginRequiredMixin, ChecklistItemObjectMixin, Template
     def get(self, request, checklist_item_id, project_id, checklist_id):
         context = self.get_context_data(checklist_item_id)
         checklist_item = context.pop('checklist_item', None)
-        successful_message = checklist_item.name," has been deleted."
+        successful_message = checklist_item.name + " has been deleted."
 
         field = checklist_item.field
 
@@ -254,6 +257,8 @@ class ChecklistEditItem(LoginRequiredMixin, ChecklistItemObjectMixin, TemplateVi
 
     def post(self, request, project_id, checklist_id, checklist_item_id):
         name = self.request.POST.get('checklistItemName')
+        checklistitemdescription = self.request.POST.get('checklistItemDescription')
+        checklistitemurl = self.request.POST.get('checklistItemURL')
         checklistitemtype = self.request.POST.get('checklistItemType')
         quantityfactor = self.request.POST.get('checklistItemQuantityFactor')
         quantity = 1 * quantityfactor
@@ -269,6 +274,8 @@ class ChecklistEditItem(LoginRequiredMixin, ChecklistItemObjectMixin, TemplateVi
 
         checklist_item_update_dict = {
             "name": name,
+            "checklistitemdescription": checklistitemdescription,
+            "checklistitemurl": checklistitemurl,
             "checklistitemtype": checklistitemtype,
             "quantityfactor": quantityfactor,
             "quantity": quantity,
@@ -277,7 +284,7 @@ class ChecklistEditItem(LoginRequiredMixin, ChecklistItemObjectMixin, TemplateVi
         }
         checklist_item.update(checklist_item_update_dict)
 
-        successful_message = checklist_item.name," has been updated."
+        successful_message = checklist_item.name + " has been updated."
         messages.success(self.request, successful_message)
         return redirect('geokey_checklist:index', checklist_id=checklist_id)
 
@@ -446,7 +453,7 @@ class ChecklistAddChecklist(TemplateView):
         else:
             #do nothing
         """
-        successful_message = checklist.name," has been added."
+        successful_message = checklist.name + " has been added."
         messages.success(self.request, successful_message)
         return redirect('geokey_checklist:index', checklist_id=category.id)
 
@@ -514,7 +521,7 @@ class ChecklistEditChecklist(LoginRequiredMixin, TemplateView): #add ChecklistOb
         setattr(location, "geometry", geometry)
         location.save()
 
-        successful_message = checklist.name," has been updated."
+        successful_message = checklist.name + " has been updated."
         messages.success(self.request, successful_message)
         return redirect('geokey_checklist:index', checklist_id=checklist_id)
 
@@ -531,7 +538,7 @@ class ChecklistDeleteChecklist(LoginRequiredMixin, ChecklistObjectMixin, Templat
         #observation = Observation.objects.get(project=project,category=category)
         #location = observation.location
 
-        successful_message = checklist.name," has been deleted."
+        successful_message = checklist.name + " has been deleted."
 
         if category is not None:
             category.delete()

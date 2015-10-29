@@ -21,7 +21,7 @@
       <input type="hidden" name="checklist-project-id" value="{{project.id}}" />
       <table>
         <tr>
-          <td>
+          <td class="text-left">
             <select name="checklists">
               {% for category in categories %}
                 {% if category.name != "Fixit" %}
@@ -36,11 +36,11 @@
               {% endfor %}
             </select>
           </td>
-          <td>INFO</td>
-          <td><a href="" name="checklist-settings" class="btn btn-success btn-lg">Settings</a></td>
-          <td><a href="" name="checklist-add-checklist-link" class="btn btn-success btn-lg">New</a></td>
-          <td><a href="" name="checklist-edit-checklist-link" class="btn btn-success btn-lg">Edit</a></td>
-          <td><a href="" name="checklist-delete-checklist-link" class="btn btn-success btn-lg">Delete</a></td>
+          <!--td>INFO</td-->
+          <td class="col-md-1"><a href="" name="checklist-settings" class="btn btn-success btn-lg">Settings</a></td>
+          <td class="col-md-1"><a href="" name="checklist-add-checklist-link" class="btn btn-success btn-lg">New</a></td>
+          <td class="col-md-1"><a href="" name="checklist-edit-checklist-link" class="btn btn-success btn-lg">Edit</a></td>
+          <td class="col-md-1"><a href="" name="checklist-delete-checklist-link" class="btn btn-success btn-lg">Delete</a></td>
         </tr>
       </table>
     </div>
@@ -49,22 +49,22 @@
       <div name="checklist-descriptions">
         <div name="checklist-description-empty">Add a new checklist by clicking the New button</div>
         {% for category in categories %}
-          <div name="checklist-description{{category.id}}">{{category.description}}</div>
+          <div name="checklist-description{{category.id}}"><p>{{category.description}}</p></div>
         {% endfor %}
       </div>
 
-      <div name="checklist-items-expired-div">
+      <div name="checklist-items-expired-div" style="margin-bottom:20px;">
         <h4>EXPIRED</h4>
-        <table name="checklist-items-expired">
+        <table name="checklist-items-expired" class="table-bordered">
           <thead>
           <tr>
-            <th></th>
-            <th>ITEM</th>
-            <th>QUANTITY</th>
-            <th>EXPIRY</th>
-            <th>TYPE</th>
-            <th>EDIT</th>
-            <th>DELETE</th>
+            <th class="col-sm-1 text-center"></th>
+            <th class="col-md-2 text-center">ITEM</th>
+            <th class="col-sm-1 text-center">QUANTITY</th>
+            <th class="col-md-6 text-center">DESCRIPTION</th>
+            <th class="col-md-1 text-center">EXPIRY</th>
+            <th class="col-md-1 text-center"></th>
+            <th class="col-md-1 text-center"></th>
           </tr>
           </thead>
           <tbody>
@@ -72,18 +72,18 @@
         </table>
       </div>
 
-      <div name="checklist-items-expiring-soon-div">
+      <div name="checklist-items-expiring-soon-div" style="margin-bottom:20px;">
         <h4>EXPIRING SOON</h4>
-        <table name="checklist-items-expiring-soon">
+        <table name="checklist-items-expiring-soon" class="table-bordered">
           <thead>
           <tr>
-            <th></th>
-            <th>ITEM</th>
-            <th>QUANTITY</th>
-            <th>EXPIRY</th>
-            <th>TYPE</th>
-            <th>EDIT</th>
-            <th>DELETE</th>
+            <th class="col-sm-1 text-center"></th>
+            <th class="col-md-2 text-center">ITEM</th>
+            <th class="col-sm-1 text-center">QUANTITY</th>
+            <th class="col-md-6 text-center">DESCRIPTION</th>
+            <th class="col-md-1 text-center">EXPIRY</th>
+            <th class="col-md-1 text-center"></th>
+            <th class="col-md-1 text-center"></th>
           </tr>
           </thead>
           <tbody>
@@ -91,18 +91,18 @@
         </table>
       </div>
 
-      <div name="checklist-items-essential-div">
+      <div name="checklist-items-essential-div" style="margin-bottom:20px;">
         <h4>ESSENTIAL</h4>
-        <table name="checklist-items-essential">
+        <table name="checklist-items-essential" class="table-bordered">
           <thead>
           <tr>
-            <th></th>
-            <th>ITEM</th>
-            <th>QUANTITY</th>
-            <th>EXPIRY</th>
-            <th>TYPE</th>
-            <th>EDIT</th>
-            <th>DELETE</th>
+            <th class="col-sm-1 text-center"></th>
+            <th class="col-md-2 text-center">ITEM</th>
+            <th class="col-sm-1 text-center">QUANTITY</th>
+            <th class="col-md-6 text-center">DESCRIPTION</th>
+            <th class="col-md-1 text-center">EXPIRY</th>
+            <th class="col-md-1 text-center"></th>
+            <th class="col-md-1 text-center"></th>
           </tr>
           </thead>
           <tbody>
@@ -110,18 +110,18 @@
         </table>
       </div>
 
-      <div name="checklist-items-useful-div">
+      <div name="checklist-items-useful-div" style="margin-bottom:20px;">
         <h4>USEFUL</h4>
-        <table name="checklist-items-useful">
+        <table name="checklist-items-useful" class="table-bordered">
           <thead>
           <tr>
-            <th></th>
-            <th>ITEM</th>
-            <th>QUANTITY</th>
-            <th>EXPIRY</th>
-            <th>TYPE</th>
-            <th>EDIT</th>
-            <th>DELETE</th>
+            <th class="col-sm-1 text-center"></th>
+            <th class="col-md-2 text-center">ITEM</th>
+            <th class="col-sm-1 text-center">QUANTITY</th>
+            <th class="col-md-6 text-center">DESCRIPTION</th>
+            <th class="col-md-1 text-center">EXPIRY</th>
+            <th class="col-md-1 text-center"></th>
+            <th class="col-md-1 text-center"></th>
           </tr>
           </thead>
           <tbody>
@@ -129,18 +129,18 @@
         </table>
       </div>
 
-      <div name="checklist-items-personal-div">
+      <div name="checklist-items-personal-div" style="margin-bottom:20px;">
         <h4>PERSONAL</h4>
-        <table name="checklist-items-personal">
+        <table name="checklist-items-personal" class="table-bordered">
           <thead>
           <tr>
-            <th></th>
-            <th>ITEM</th>
-            <th>QUANTITY</th>
-            <th>EXPIRY</th>
-            <th>TYPE</th>
-            <th>EDIT</th>
-            <th>DELETE</th>
+            <th class="col-sm-1 text-center"></th>
+            <th class="col-md-2 text-center">ITEM</th>
+            <th class="col-sm-1 text-center">QUANTITY</th>
+            <th class="col-md-6 text-center">DESCRIPTION</th>
+            <th class="col-md-1 text-center">EXPIRY</th>
+            <th class="col-md-1 text-center"></th>
+            <th class="col-md-1 text-center"></th>
           </tr>
           </thead>
           <tbody>
@@ -148,18 +148,37 @@
         </table>
       </div>
 
-      <div name="checklist-items-children-div">
+      <div name="checklist-items-fixit-div" style="margin-bottom:20px;">
+        <h4>FIX IT</h4>
+        <table name="checklist-items-fixit" class="table-bordered">
+          <thead>
+          <tr>
+            <th class="col-sm-1 text-center"></th>
+            <th class="col-md-2 text-center">ITEM</th>
+            <th class="col-sm-1 text-center">QUANTITY</th>
+            <th class="col-md-6 text-center">DESCRIPTION</th>
+            <th class="col-md-1 text-center">EXPIRY</th>
+            <th class="col-md-1 text-center"></th>
+            <th class="col-md-1 text-center"></th>
+          </tr>
+          </thead>
+          <tbody>
+          </tbody>
+        </table>
+      </div>
+
+      <div name="checklist-items-children-div" style="margin-bottom:20px;">
         <h4>CHILDREN</h4>
-        <table name="checklist-items-children">
+        <table name="checklist-items-children" class="table-bordered">
           <thead>
           <tr>
-            <th></th>
-            <th>ITEM</th>
-            <th>QUANTITY</th>
-            <th>EXPIRY</th>
-            <th>TYPE</th>
-            <th>EDIT</th>
-            <th>DELETE</th>
+            <th class="col-sm-1 text-center"></th>
+            <th class="col-md-2 text-center">ITEM</th>
+            <th class="col-sm-1 text-center">QUANTITY</th>
+            <th class="col-md-6 text-center">DESCRIPTION</th>
+            <th class="col-md-1 text-center">EXPIRY</th>
+            <th class="col-md-1 text-center"></th>
+            <th class="col-md-1 text-center"></th>
           </tr>
           </thead>
           <tbody>
@@ -167,18 +186,18 @@
         </table>
       </div>
 
-      <div name="checklist-items-toddlers-div">
+      <div name="checklist-items-toddlers-div" style="margin-bottom:20px;">
         <h4>TODDLERS</h4>
-        <table name="checklist-items-toddlers">
+        <table name="checklist-items-toddlers" class="table-bordered">
           <thead>
           <tr>
-            <th></th>
-            <th>ITEM</th>
-            <th>QUANTITY</th>
-            <th>EXPIRY</th>
-            <th>TYPE</th>
-            <th>EDIT</th>
-            <th>DELETE</th>
+            <th class="col-sm-1 text-center"></th>
+            <th class="col-md-2 text-center">ITEM</th>
+            <th class="col-sm-1 text-center">QUANTITY</th>
+            <th class="col-md-6 text-center">DESCRIPTION</th>
+            <th class="col-md-1 text-center">EXPIRY</th>
+            <th class="col-md-1 text-center"></th>
+            <th class="col-md-1 text-center"></th>
           </tr>
           </thead>
           <tbody>
@@ -186,18 +205,18 @@
         </table>
       </div>
 
-      <div name="checklist-items-infants-div">
+      <div name="checklist-items-infants-div" style="margin-bottom:20px;">
         <h4>INFANTS</h4>
-        <table name="checklist-items-infants">
+        <table name="checklist-items-infants" class="table-bordered">
           <thead>
           <tr>
-            <th></th>
-            <th>ITEM</th>
-            <th>QUANTITY</th>
-            <th>EXPIRY</th>
-            <th>TYPE</th>
-            <th>EDIT</th>
-            <th>DELETE</th>
+            <th class="col-sm-1 text-center"></th>
+            <th class="col-md-2 text-center">ITEM</th>
+            <th class="col-sm-1 text-center">QUANTITY</th>
+            <th class="col-md-6 text-center">DESCRIPTION</th>
+            <th class="col-md-1 text-center">EXPIRY</th>
+            <th class="col-md-1 text-center"></th>
+            <th class="col-md-1 text-center"></th>
           </tr>
           </thead>
           <tbody>
@@ -205,18 +224,18 @@
         </table>
       </div>
 
-      <div name="checklist-items-pets-div">
+      <div name="checklist-items-pets-div" style="margin-bottom:20px;">
         <h4>PETS</h4>
-        <table name="checklist-items-pets">
+        <table name="checklist-items-pets" class="table-bordered">
           <thead>
           <tr>
-            <th></th>
-            <th>ITEM</th>
-            <th>QUANTITY</th>
-            <th>EXPIRY</th>
-            <th>TYPE</th>
-            <th>EDIT</th>
-            <th>DELETE</th>
+            <th class="col-sm-1 text-center"></th>
+            <th class="col-md-2 text-center">ITEM</th>
+            <th class="col-sm-1 text-center">QUANTITY</th>
+            <th class="col-md-6 text-center">DESCRIPTION</th>
+            <th class="col-md-1 text-center">EXPIRY</th>
+            <th class="col-md-1 text-center"></th>
+            <th class="col-md-1 text-center"></th>
           </tr>
           </thead>
           <tbody>
@@ -224,18 +243,18 @@
         </table>
       </div>
 
-      <div name="checklist-items-custom-div">
+      <div name="checklist-items-custom-div" style="margin-bottom:20px;">
         <h4>CUSTOM</h4>
-        <table name="checklist-items-custom">
+        <table name="checklist-items-custom" class="table-bordered">
           <thead>
           <tr>
-            <th></th>
-            <th>ITEM</th>
-            <th>QUANTITY</th>
-            <th>EXPIRY</th>
-            <th>TYPE</th>
-            <th>EDIT</th>
-            <th>DELETE</th>
+            <th class="col-sm-1 text-center"></th>
+            <th class="col-md-2 text-center">ITEM</th>
+            <th class="col-sm-1 text-center">QUANTITY</th>
+            <th class="col-md-6 text-center">DESCRIPTION</th>
+            <th class="col-md-1 text-center">EXPIRY</th>
+            <th class="col-md-1 text-center"></th>
+            <th class="col-md-1 text-center"></th>
           </tr>
           </thead>
           <tbody>
@@ -243,23 +262,6 @@
         </table>
       </div>
 
-      <!--div>
-        <table name="checklist-items">
-          <thead>
-          <tr>
-            <th></th>
-            <th>ITEM</th>
-            <th>QUANTITY</th>
-            <th>EXPIRY</th>
-            <th>TYPE</th>
-            <th>EDIT</th>
-            <th>DELETE</th>
-          </tr>
-          </thead>
-          <tbody>
-          </tbody>
-        </table>
-      </div-->
 
       <a href="" name="checklist-add-item-link" class="btn btn-success btn-lg">Add an Item</a>
     </div>

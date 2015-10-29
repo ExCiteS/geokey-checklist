@@ -40,9 +40,11 @@
         <div class="form-group">
           <label for="checklistRemindersOn" class="control-label">Reminders On? (required)</label>
           {% if checklist_settings.reminderson == True %}
-            <input type="checkbox" class="form-control input-lg" name="checklistRemindersOn" checked required/>
+            <label class="radio-inline"><input type="radio" name="checklistRemindersOn" value="Yes" checked required>Yes</input></label>
+            <label class="radio-inline"><input type="radio" name="checklistRemindersOn" value="No" required>No</input></label>
           {% else %}
-            <input type="checkbox" class="form-control input-lg" name="checklistRemindersOn" required />
+            <label class="radio-inline"><input type="radio" name="checklistRemindersOn" value="Yes" required>Yes</input></label>
+            <label class="radio-inline"><input type="radio" name="checklistRemindersOn" value="No" checked required>No</input></label>
           {% endif %}
         </div>
 

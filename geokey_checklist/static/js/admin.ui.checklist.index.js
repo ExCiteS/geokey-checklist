@@ -45,6 +45,9 @@
         var checklistItemsTablePersonal = $('table[name=checklist-items-personal]');
         checklistItemsTablePersonal.find("tr:gt(0)").remove();
 
+        var checklistItemsTableFixit = $('table[name=checklist-items-fixit]');
+        checklistItemsTableFixit.find("tr:gt(0)").remove();
+
         var checklistItemsTableChildren = $('table[name=checklist-items-children]');
         checklistItemsTableChildren.find("tr:gt(0)").remove();
 
@@ -94,6 +97,8 @@
         useful_div.hide();
         var personal_div = $('div[name=checklist-items-personal-div]');
         personal_div.hide();
+        var fixit_div = $('div[name=checklist-items-fixit-div]');
+        fixit_div.hide();
         var children_div = $('div[name=checklist-items-children-div]');
         children_div.hide();
         var toddlers_div = $('div[name=checklist-items-toddlers-div]');
@@ -118,6 +123,8 @@
                           var id = -1;
                           var name = "";
                           var have_it = false;
+                          var description = "";
+                          var url = "";
                           var quantity = -1;
                           var expiry = Date.now();
                           var checklistitemtype = "";
@@ -131,6 +138,14 @@
 
                               case "name":
                                 name = cid_obj[key2];
+                                break;
+
+                              case "checklistitemdescription":
+                                description = cid_obj[key2];
+                                break;
+
+                              case "checklistitemurl":
+                                url = cid_obj[key2];
                                 break;
 
                               case "quantity":
@@ -170,7 +185,7 @@
                           if(have_it) {
                             rowHTML += "<td>";
                             var update_url = "/admin/checklist/" + project_id + "/" + category_id + "/edit-item-val/" + id + "/" + "haveit" + "/" + "False" + "/";
-                            rowHTML += "<form method='POST' action='" + update_url + "' name='form-haveit" + id + "' novalidate>";
+                            rowHTML += "<form method='POST' action='" + update_url + "' name='form-haveit" + id + "' novalidate class='text-center'>";
                             var onchange_fcn_str = "updateCI(\"" + project_id + "\",\"" + category_id + "\",\"" + id + "\",\"" + "haveit" + "\",\"" + "False" + "\")";
                             rowHTML += "<input type='checkbox' name='haveit" + id + "' onchange='" + onchange_fcn_str + "' checked />";
                             rowHTML += "</form>";
@@ -179,18 +194,22 @@
                           else {
                             rowHTML += "<td>";
                             var update_url = "/admin/checklist/" + project_id + "/" + category_id + "/edit-item-val/" + id + "/" + "haveit" + "/" + "True" + "/";
-                            rowHTML += "<form method='POST' action='" + update_url + "' name='form-haveit" + id + "' novalidate>";
+                            rowHTML += "<form method='POST' action='" + update_url + "' name='form-haveit" + id + "' novalidate class='text-center'>";
                             var onchange_fcn_str = "updateCI(\"" + project_id + "\",\"" + category_id + "\",\"" + id + "\",\"" + "haveit" + "\",\"" + "True" + "\")";
                             rowHTML += "<input type='checkbox' name='haveit" + id + "' onchange='" + onchange_fcn_str + "' />";
                             rowHTML += "</form>";
                             rowHTML += "</td>";
                           }
-                          rowHTML += "<td>" + name + "</td>";
-                          rowHTML += "<td>" + quantity + "</td>";
-                          rowHTML += "<td>" + expiry + "</td>";
-                          rowHTML += "<td>" + checklistitemtype + "</td>";
-                          rowHTML += "<td>" + "<a href='/admin/checklist/" + project_id + "/" + category_id + "/edit-item/" + id + "/' name='checklist-item-edit" + id + "' class='btn btn-primary'>Edit</a>" + "</td>";
-                          rowHTML += "<td>" + "<a href='/admin/checklist/" + project_id + "/" + category_id + "/delete-item/" + id + "/' name='checklist-item-delete" + id + "' class='btn btn-primary'>Delete</a>" + "</td>";
+                          rowHTML += "<td class='text-center'>" + name + "</td>";
+                          rowHTML += "<td class='text-center'>" + quantity + "</td>";
+                          if(url != "") {
+                            rowHTML += "<td class='text-center'>" + "<a href='" + url + "'>" + description + "</a>" + "</td>";
+                          } else {
+                            rowHTML += "<td class='text-center'>" + description + "</td>";
+                          }
+                          rowHTML += "<td class='text-center'>" + expiry + "</td>";
+                          rowHTML += "<td class='text-center'>" + "<a href='/admin/checklist/" + project_id + "/" + category_id + "/edit-item/" + id + "/' name='checklist-item-edit" + id + "' class='btn btn-primary'>Edit</a>" + "</td>";
+                          rowHTML += "<td class='text-center'>" + "<a href='/admin/checklist/" + project_id + "/" + category_id + "/delete-item/" + id + "/' name='checklist-item-delete" + id + "' class='btn btn-primary'>Delete</a>" + "</td>";
                           rowHTML += "</tr>";
 
                           //if(expiry < now())
@@ -220,6 +239,11 @@
                               case "Personal":
                                 personal_div.show();
                                 checklistItemsTablePersonal.append(rowHTML);
+                                break;
+
+                              case "Fixit":
+                                fixit_div.show();
+                                checklistItemsTableFixit.append(rowHTML);
                                 break;
 
                               case "Children":
