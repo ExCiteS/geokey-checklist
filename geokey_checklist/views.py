@@ -187,6 +187,7 @@ class ChecklistAddItem(TemplateView):
         checklistitemurl = self.request.POST.get('checklistItemURL')
         quantityfactor = self.request.POST.get('checklistItemQuantityFactor')
         quantity = 1 * quantityfactor
+        quantityunit = self.request.POST.get('checklistItemQuantityUnit')
         expiryfactor = self.request.POST.get('checklistItemExpiry')
         expiry = datetime.datetime.now()
         haveit = False
@@ -204,6 +205,7 @@ class ChecklistAddItem(TemplateView):
             checklistitemtype=checklistitemtype,
             quantityfactor=quantityfactor,
             quantity=quantity,
+            quantityunit=quantityunit,
             expiryfactor=expiryfactor,
             expiry=expiry,
             haveit=haveit
@@ -262,6 +264,7 @@ class ChecklistEditItem(LoginRequiredMixin, ChecklistItemObjectMixin, TemplateVi
         checklistitemtype = self.request.POST.get('checklistItemType')
         quantityfactor = self.request.POST.get('checklistItemQuantityFactor')
         quantity = 1 * quantityfactor
+        quantityunit = self.request.POST.get('checklistItemQuantityUnit')
         expiryfactor = self.request.POST.get('checklistItemExpiry')
         expiry = datetime.datetime.now()
 
@@ -279,6 +282,7 @@ class ChecklistEditItem(LoginRequiredMixin, ChecklistItemObjectMixin, TemplateVi
             "checklistitemtype": checklistitemtype,
             "quantityfactor": quantityfactor,
             "quantity": quantity,
+            "quantityunit": quantityunit,
             "expiryfactor": expiryfactor,
             "expiry":expiry
         }

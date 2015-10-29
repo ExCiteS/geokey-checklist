@@ -95,12 +95,14 @@
           <input type="number" class="form-control input-lg" name="checklistNumPets" min="0" value="0" required />
         </div>
 
-        <div class="form-group">
+        <div class="form-group text-center">
           <button type="submit" name="createChecklist" class="btn btn-primary">Create Checklist</button>
         </div>
     </form>
 
-    <a href="{% url 'geokey_checklist:index' %}" name="checklist-cancel" class="btn btn-success btn-lg">Cancel</a>
+    <div class="text-center" style="margin-bottom:20px;">
+      <a href="{% url 'geokey_checklist:index' %}" name="checklist-cancel" class="btn btn-success btn-lg">Cancel</a>
+    </div>
 
   </div>
 

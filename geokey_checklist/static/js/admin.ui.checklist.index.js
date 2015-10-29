@@ -126,6 +126,7 @@
                           var description = "";
                           var url = "";
                           var quantity = -1;
+                          var quantityunit = "";
                           var expiry = Date.now();
                           var checklistitemtype = "";
 
@@ -150,6 +151,10 @@
 
                               case "quantity":
                                 quantity = cid_obj[key2];
+                                break;
+
+                              case "quantityunit":
+                                quantityunit = cid_obj[key2];
                                 break;
 
                               case "expiry":
@@ -202,10 +207,11 @@
                           }
                           rowHTML += "<td class='text-center'>" + name + "</td>";
                           rowHTML += "<td class='text-center'>" + quantity + "</td>";
-                          if(url != "") {
-                            rowHTML += "<td class='text-center'>" + "<a href='" + url + "'>" + description + "</a>" + "</td>";
-                          } else {
+                          rowHTML += "<td class='text-center'>" + quantityunit + "</td>";
+                          if(url == "" || url == "null" || url == null) {
                             rowHTML += "<td class='text-center'>" + description + "</td>";
+                          } else {
+                            rowHTML += "<td class='text-center'>" + "<a href='" + url + "'>" + description + "</a>" + "</td>";
                           }
                           rowHTML += "<td class='text-center'>" + expiry + "</td>";
                           rowHTML += "<td class='text-center'>" + "<a href='/admin/checklist/" + project_id + "/" + category_id + "/edit-item/" + id + "/' name='checklist-item-edit" + id + "' class='btn btn-primary'>Edit</a>" + "</td>";

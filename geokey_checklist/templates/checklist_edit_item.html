@@ -48,6 +48,11 @@
         </div>
 
         <div class="form-group">
+          <label for="checklistItemQuantityUnit" class="control-label">Unit</label>
+          <input type="text" class="form-control input-lg" name="checklistItemQuantityUnit" maxlength="100" value="{{checklist_item.quantityunit}}">
+        </div>
+
+        <div class="form-group">
           <label for="checklistItemDescription" class="control-label">Description</label>
           <input type="text" class="form-control input-lg" name="checklistItemDescription" maxlength="100" value="{{checklist_item.checklistitemdescription}}">
         </div>
@@ -139,12 +144,14 @@
           </select>
         </div>
 
-        <div class="form-group">
+        <div class="form-group text-center">
           <button type="submit" name="editChecklistItem" class="btn btn-primary">Edit Checklist Item</button>
         </div>
     </form>
 
-    <a href="{% url 'geokey_checklist:index' category.id %}" name="checklist-cancel" class="btn btn-success btn-lg">Cancel</a>
+    <div class="text-center" style="margin-bottom:20px;">
+      <a href="{% url 'geokey_checklist:index' category.id %}" name="checklist-cancel" class="btn btn-success btn-lg">Cancel</a>
+    </div>
 
   </div>
 
