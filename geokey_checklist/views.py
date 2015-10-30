@@ -1,10 +1,12 @@
 import json
 import datetime
+import math
 
 from braces.views import LoginRequiredMixin
 
+from datetime import timedelta
+
 from django.contrib import messages
-#from django.contrib.gis.db import models as gis
 from django.contrib.gis.geos import GEOSGeometry
 from django.contrib.gis.geos import Point
 from django.db.models import CharField
@@ -23,6 +25,7 @@ from geokey.projects.models import Project
 
 from .base import TYPE
 from .base import ITEM_TYPE
+from .base import EXPIRY_FACTOR
 
 from .models import ChecklistItem
 from .models import Checklist
@@ -82,20 +85,13 @@ class IndexPage(TemplateView, ChecklistItemObjectMixin):
         if projects:
             project = projects[0]
 
-        #fixit_id = None
         categories = None
         if project:
             categories = Category.objects.get_list(self.request.user, project.id)
-            #for category in categories:
-                #print "looking at ", category.name
-                #if category.name == "Fixit":
-                #    fixit_id = int(category.id)
-                #    print "found it! ", fixit_id, " type ", type(fixit_id)
 
         return super(IndexPage, self).get_context_data(
             project=project,
             categories=categories,
-            #fixit_id=fixit_id,
             *args,
             **kwargs
         )
@@ -152,7 +148,8 @@ class ChecklistIndexUpdateItems(LoginRequiredMixin, APIView, ChecklistItemObject
                     if(key == "id"):
                         cid_key = attrs[key]
                     if(key == "expiry"):
-                        val = str(val)
+                        if(type(val) == datetime.datetime):
+                            val = str(val.date())
                     checklistItem_dict[key] = val
 
             checklistItems_dict[cid_key] = checklistItem_dict
@@ -164,14 +161,25 @@ class ChecklistAddItem(TemplateView):
 
     def get_context_data(self, project_id, checklist_id, *args, **kwargs):
         category = Category.objects.get_single(self.request.user, project_id, checklist_id)
+        expiryFactorChoices = EXPIRY_FACTOR
 
         return super(ChecklistAddItem, self).get_context_data(
             category=category,
+            expiryFactorChoices=expiryFactorChoices,
             *args,
             **kwargs
         )
 
     def post(self, request, project_id, checklist_id):
+        project = Project.objects.get_single(self.request.user, project_id)
+        category = Category.objects.get_single(self.request.user, project_id, checklist_id)
+        checklist = Checklist.objects.get(project=project,category=category)
+        numberofpeople = checklist.numberofpeople
+        numberofchildren = checklist.numberofchildren
+        numberoftoddlers = checklist.numberoftoddlers
+        numberofinfants = checklist.numberofinfants
+        numberofpets = checklist.numberofpets
+
         name = self.request.POST.get('checklistItemName')
         project = Project.objects.get_single(self.request.user, project_id)
         category = Category.objects.get_single(
@@ -185,12 +193,35 @@ class ChecklistAddItem(TemplateView):
 
         checklistitemdescription = self.request.POST.get('checklistItemDescription')
         checklistitemurl = self.request.POST.get('checklistItemURL')
-        quantityfactor = self.request.POST.get('checklistItemQuantityFactor')
-        quantity = 1 * quantityfactor
+        quantityfactor_str = self.request.POST.get('checklistItemQuantityFactor')
+        quantityfactor = int(quantityfactor_str)
+
         quantityunit = self.request.POST.get('checklistItemQuantityUnit')
         expiryfactor = self.request.POST.get('checklistItemExpiry')
-        expiry = datetime.datetime.now()
+        expiry = None
         haveit = False
+
+        totalnumber = 1
+        quantity = 0
+
+        if checklistitemtype == "Essential" or checklistitemtype == "Useful" or checklistitemtype == "Personal":
+            totalnumber_float = float(numberofpeople) + (float(numberofchildren) * 0.5) + (float(numberoftoddlers) * 0.3) + (float(numberofinfants) * 0.1) + (float(numberofpets) * 0.1)
+            totalnumber = int(math.ceil(totalnumber_float))
+        elif checklistitemtype == "Children":
+            totalnumber = numberofchildren
+        elif checklistitemtype == "Toddlers":
+            totalnumber = numberoftoddlers
+        elif checklistitemtype == "Infants":
+            totalnumber = numberofinfants
+        elif checklistitemtype == "Pets":
+            totalnumber = numberofpets
+        else:
+            totalnumber = 1 #for 'Custom' or 'Fixit'
+
+        if quantityfactor == 0:
+            quantity = 1 # this is for an item per household (e.g. first aid kit)
+        else:
+            quantity = totalnumber * quantityfactor # this is for an item per member of household (e.g. water)
 
         field = Field.create(name, name, "", False, category, 'TextField')
 
@@ -202,6 +233,7 @@ class ChecklistAddItem(TemplateView):
             creator=creator,
             #checklisttype=checklisttype,
             checklistitemdescription=checklistitemdescription,
+            checklistitemurl=checklistitemurl,
             checklistitemtype=checklistitemtype,
             quantityfactor=quantityfactor,
             quantity=quantity,
@@ -238,9 +270,28 @@ class ChecklistEditItemVal(LoginRequiredMixin, ChecklistItemObjectMixin, Templat
 
     def get(self, request, project_id, checklist_id, checklist_item_id, checklist_item_field_key, checklist_item_field_val):
         checklist_item = ChecklistItem.objects.get(project_id=project_id, category_id=checklist_id, pk=checklist_item_id)
-        checklist_item_update_dict = {
-            checklist_item_field_key: checklist_item_field_val
-        }
+
+        checklist_item_update_dict = {}
+
+        if checklist_item_field_key == "haveit":
+            if checklist_item_field_val == "True":
+                expiryfactor = checklist_item.expiryfactor
+                expiry = datetime.timedelta(days=int(expiryfactor)) + datetime.datetime.now()
+                checklist_item_update_dict = {
+                    checklist_item_field_key: checklist_item_field_val,
+                    "expiry": expiry
+                }
+            else:
+                checklist_item_update_dict = {
+                    checklist_item_field_key: checklist_item_field_val,
+                    "expiry": None
+                }
+        else:
+            checklist_item_update_dict = {
+                checklist_item_field_key: checklist_item_field_val
+            }
+
+
         checklist_item.update(checklist_item_update_dict)
 
         return redirect('geokey_checklist:index', checklist_id=checklist_id)
@@ -258,17 +309,50 @@ class ChecklistEditItem(LoginRequiredMixin, ChecklistItemObjectMixin, TemplateVi
         )
 
     def post(self, request, project_id, checklist_id, checklist_item_id):
+        project = Project.objects.get_single(self.request.user, project_id)
+        category = Category.objects.get_single(self.request.user, project_id, checklist_id)
+        checklist = Checklist.objects.get(project=project,category=category)
+        numberofpeople = checklist.numberofpeople
+        numberofchildren = checklist.numberofchildren
+        numberoftoddlers = checklist.numberoftoddlers
+        numberofinfants = checklist.numberofinfants
+        numberofpets = checklist.numberofpets
+
         name = self.request.POST.get('checklistItemName')
         checklistitemdescription = self.request.POST.get('checklistItemDescription')
         checklistitemurl = self.request.POST.get('checklistItemURL')
         checklistitemtype = self.request.POST.get('checklistItemType')
-        quantityfactor = self.request.POST.get('checklistItemQuantityFactor')
-        quantity = 1 * quantityfactor
+        quantityfactor_str = self.request.POST.get('checklistItemQuantityFactor')
+        quantityfactor = int(quantityfactor_str)
         quantityunit = self.request.POST.get('checklistItemQuantityUnit')
         expiryfactor = self.request.POST.get('checklistItemExpiry')
-        expiry = datetime.datetime.now()
+        expiry = None
 
         checklist_item = ChecklistItem.objects.get(pk=checklist_item_id)
+        if checklist_item.haveit == True:
+            expiry = datetime.timedelta(days=int(expiryfactor)) + datetime.datetime.now();
+
+        totalnumber = 1
+        quantity = 0
+
+        if checklistitemtype == "Essential" or checklistitemtype == "Useful" or checklistitemtype == "Personal":
+            totalnumber_float = float(numberofpeople) + (float(numberofchildren) * 0.5) + (float(numberoftoddlers) * 0.3) + (float(numberofinfants) * 0.1) + (float(numberofpets) * 0.1)
+            totalnumber = int(math.ceil(totalnumber_float))
+        elif checklistitemtype == "Children":
+            totalnumber = numberofchildren
+        elif checklistitemtype == "Toddlers":
+            totalnumber = numberoftoddlers
+        elif checklistitemtype == "Infants":
+            totalnumber = numberofinfants
+        elif checklistitemtype == "Pets":
+            totalnumber = numberofpets
+        else:
+            totalnumber = 1 #for 'Custom' or 'Fixit'
+
+        if quantityfactor == 0:
+            quantity = 1 # this is for an item per household (e.g. first aid kit)
+        else:
+            quantity = totalnumber * quantityfactor # this is for an item per member of household (e.g. water)
 
         field = checklist_item.field
         setattr(field, "name", name)
@@ -500,7 +584,6 @@ class ChecklistEditChecklist(LoginRequiredMixin, TemplateView): #add ChecklistOb
         geom_point = Point((float(longitude), float(latitude)))
         geometry = GEOSGeometry(geom_point)
 
-        #This probably isn't the best way of doing this, but not sure if going to keep using category or create custom obj...
         setattr(category, "name", name)
         setattr(category, "description", description)
         category.save()
@@ -508,8 +591,6 @@ class ChecklistEditChecklist(LoginRequiredMixin, TemplateView): #add ChecklistOb
         setattr(checklist, "name", name)
         setattr(checklist, "description", description)
 
-        #need to check if these have changed and, if so, updated the numbers
-        print checklist.checklisttype
         setattr(checklist, "numberofpeople", numberofpeople)
         setattr(checklist, "numberofchildren", numberofchildren)
         setattr(checklist, "numberoftoddlers", numberoftoddlers)
@@ -525,6 +606,38 @@ class ChecklistEditChecklist(LoginRequiredMixin, TemplateView): #add ChecklistOb
         setattr(location, "geometry", geometry)
         location.save()
 
+        #now loop through every checklist item in this checklist and update the quantity based on the new number of people, etc.
+        checklistItems = ChecklistItem.objects.filter(project=project, category=category)
+        for checklistItem in checklistItems:
+
+            checklistitemtype = checklistItem.checklistitemtype
+            quantityfactor = checklistItem.quantityfactor
+
+            totalnumber = 1
+            quantity = 0
+
+            if checklistitemtype == "Essential" or checklistitemtype == "Useful" or checklistitemtype == "Personal":
+                totalnumber_float = float(numberofpeople) + (float(numberofchildren) * 0.5) + (float(numberoftoddlers) * 0.3) + (float(numberofinfants) * 0.1) + (float(numberofpets) * 0.1)
+                totalnumber = int(math.ceil(totalnumber_float))
+            elif checklistitemtype == "Children":
+                totalnumber = numberofchildren
+            elif checklistitemtype == "Toddlers":
+                totalnumber = numberoftoddlers
+            elif checklistitemtype == "Infants":
+                totalnumber = numberofinfants
+            elif checklistitemtype == "Pets":
+                totalnumber = numberofpets
+            else:
+                totalnumber = 1 #for 'Custom' or 'Fixit'
+
+            if quantityfactor == 0:
+                quantity = 1 # this is for an item per household (e.g. first aid kit)
+            else:
+                quantity = totalnumber * quantityfactor # this is for an item per member of household (e.g. water)
+
+            setattr(checklistItem, "quantity", quantity)
+            checklistItem.save()
+
         successful_message = checklist.name + " has been updated."
         messages.success(self.request, successful_message)
         return redirect('geokey_checklist:index', checklist_id=checklist_id)
@@ -539,9 +652,6 @@ class ChecklistDeleteChecklist(LoginRequiredMixin, ChecklistObjectMixin, Templat
         project = Project.objects.get_single(self.request.user, project_id)
         checklist = Checklist.objects.get(project=project,category=category)
 
-        #observation = Observation.objects.get(project=project,category=category)
-        #location = observation.location
-
         successful_message = checklist.name + " has been deleted."
 
         if category is not None:
@@ -549,12 +659,6 @@ class ChecklistDeleteChecklist(LoginRequiredMixin, ChecklistObjectMixin, Templat
 
             if checklist is not None:
                 checklist.delete()
-
-            #if location is not None:
-            #    location.delete()
-
-            #if observation is not None:
-            #    observation.delete()
 
             messages.success(self.request, successful_message)
             return redirect('geokey_checklist:index')

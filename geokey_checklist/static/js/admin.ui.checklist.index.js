@@ -213,7 +213,13 @@
                           } else {
                             rowHTML += "<td class='text-center'>" + "<a href='" + url + "'>" + description + "</a>" + "</td>";
                           }
-                          rowHTML += "<td class='text-center'>" + expiry + "</td>";
+                          if(expiry == null)
+                          {
+                            rowHTML += "<td class='text-center'>" + "" + "</td>";
+                          }
+                          else{
+                            rowHTML += "<td class='text-center'>" + expiry + "</td>";
+                          }
                           rowHTML += "<td class='text-center'>" + "<a href='/admin/checklist/" + project_id + "/" + category_id + "/edit-item/" + id + "/' name='checklist-item-edit" + id + "' class='btn btn-primary'>Edit</a>" + "</td>";
                           rowHTML += "<td class='text-center'>" + "<a href='/admin/checklist/" + project_id + "/" + category_id + "/delete-item/" + id + "/' name='checklist-item-delete" + id + "' class='btn btn-primary'>Delete</a>" + "</td>";
                           rowHTML += "</tr>";
@@ -300,32 +306,26 @@
 
      }).trigger('change');
 
-    $(document).ready(function() {
-      $('select[name=checklist-items]').change();
-    });
+    //$(document).ready(function() {
+    //  $('select[name=checklist-items]').change();
+    //});
  });
 
 function updateCI(project_id, category_id, ci_id, item_key, new_val){
-  //var page_url = "/admin/checklist/" + project_id + "/";
-  var update_url = "/admin/checklist/" + project_id + "/" + category_id + "/edit-item-val/" + ci_id + "/" + item_key + "/" + new_val + "/";
-  //alert(update_url);
-  //This is throwing a CSRF token forbidden issue
-  //$("form[name=form-haveit" + ci_id +"]").submit();
+  var update_url = "admin/checklist/" + project_id + "/" + category_id + "/edit-item-val/" + ci_id + "/" + item_key + "/" + new_val + "/";
 
-  //I'm getting an out of memory exception in the browser console here, but it's working so I'll come back to this later.
-  window.location.href = update_url;
+  var data = [];
+  Control.Ajax.get(update_url, handleSuccessCallback, handleErrorCallback, data);
 
-  //I think this is the right way to do this, but I'm not sure how to implement this.
-  //There's also similar functionality in geokey/static/js/admin.control.ajax.js, but not sure how to tap into it...
+}
 
-  //$.ajax({ url: page_url,
-  //  type: 'POST',
-  //  beforeSend: function(xhr) {xhr.setRequestHeader('X-CSRFToken', $('meta[name="csrf-token"]').attr('content'))},
-  //  data: '',
-  //  success: function(response) {
-      //$("form[name=form-haveit" + ci_id +"]").submit();
-      //window.location.href = update_url;
-  //  }
-  //});
+function handleSuccessCallback()
+{
+  //alert("success");
+  $('select[name=checklists]').change();
+}
 
+function handleErrorCallback(response)
+{
+  //alert(response);
 }

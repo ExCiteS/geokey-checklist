@@ -40,7 +40,7 @@ urlpatterns = patterns(
         ChecklistEditItem.as_view(),
         name='checklist_edit_item'),
     url(
-        r'^admin/checklist/(?P<project_id>[0-9]+)/(?P<checklist_id>[0-9]+)/edit-item-val/(?P<checklist_item_id>[0-9]+)/(?P<checklist_item_field_key>[\w-]+)/(?P<checklist_item_field_val>[\w-]+)/$',
+        r'^ajax/admin/checklist/(?P<project_id>[0-9]+)/(?P<checklist_id>[0-9]+)/edit-item-val/(?P<checklist_item_id>[0-9]+)/(?P<checklist_item_field_key>[\w-]+)/(?P<checklist_item_field_val>[\w-]+)/$',
         ChecklistEditItemVal.as_view(),
         name='checklist_edit_item_val'),
     url(
