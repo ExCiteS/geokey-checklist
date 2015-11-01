@@ -17,21 +17,6 @@
 <div class="container">
     {% include 'snippets/messages.html' %}
 
-    <!--div class="row">
-        <div class="col-sm-4">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h6 class="item-info">Extension</h6>
-                    <h3>{{ name }}</h3>
-                </div>
-                <div class="list-group">
-                </div>
-            </div>
-        </div>
-        <div class="col-sm-8">
-        </div>
-    </div-->
-
   <div>
     <h3 class="header">Create new checklist item for {{category.name}}</h3>
       <form method="POST" action="{% url 'geokey_checklist:checklist_add_item' category.project.id category.id %}" novalidate>
@@ -43,8 +28,23 @@
         </div>
 
         <div class="form-group">
-          <label for="checklistItemQuantityFactor" class="control-label">QuantityFactor (required)</label>
-          <input type="number" class="form-control input-lg" name="checklistItemQuantityFactor" min="0" value="1"  required>
+          <table>
+            <tr>
+              <td>
+                <label for="checklistItemQuantityFactor" class="control-label">Amount (required)</label>
+              </td>
+              <td class="col-md-3">
+                <input type="number" class="form-control input-lg" name="checklistItemQuantityFactor" min="1" value="1"  required>
+              </td>
+              <td>
+                <select class="form control input-lg" name="checklistItemPerType">
+                  {% for value, label in perTypeChoices %}
+                    <option value="{{value}}">{{label}}</option>
+                  {% endfor %}
+                </select>
+              </td>
+            </tr>
+          </table>
         </div>
 
         <div class="form-group">
@@ -62,36 +62,21 @@
           <input type="text" class="form-control input-lg" name="checklistItemURL" maxlength="255">
         </div>
 
-        <!--div class ="form-group">
-          <label for="checklistItemExpiry2" class="control-label">Expiry</label>
-          <select class="form-control input-lg" name="checklistItemExpiry2">
-            {% for value, label in expiryFactorChoices %}
-              <option value="{{value}}">{{label}}</option>
-            {% endfor %}
-          </select>
-        </div-->
-
         <div class ="form-group">
           <label for="checklistItemExpiry" class="control-label">Expiry</label>
           <select class="form-control input-lg" name="checklistItemExpiry">
-            <option value="1">1 day</option>
-            <option value="7">1 week</option>
-            <option value="30">1 month</option>
+            {% for value, label in expiryFactorChoices %}
+              <option value="{{value}}">{{label}}</option>
+            {% endfor %}
           </select>
         </div>
 
         <div class ="form-group">
           <label for="checklistItemType" class="control-label">Item Type</label>
           <select class="form-control input-lg" name="checklistItemType">
-            <option value="Essential">Essential</option>
-            <option value="Useful">Useful</option>
-            <option value="Personal">Personal</option>
-            <option value="Fixit">Fix It</option>
-            <option value="Children">Children</option>
-            <option value="Toddlers">Toddlers</option>
-            <option value="Infants">Infants</option>
-            <option value="Pets">Pets</option>
-            <option value="Custom">Custom</option>
+            {% for value, label in itemTypeChoices %}
+              <option value="{{value}}">{{label}}</option>
+            {% endfor %}
           </select>
         </div>
 

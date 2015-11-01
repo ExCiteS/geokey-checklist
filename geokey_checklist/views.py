@@ -26,6 +26,10 @@ from geokey.projects.models import Project
 from .base import TYPE
 from .base import ITEM_TYPE
 from .base import EXPIRY_FACTOR
+from .base import PER_TYPE
+from .base import FREQUENCY_EXPIRED_REMINDER
+from .base import REMINDER_BEFORE_EXPIRATION
+from .base import DEFAULT_ITEMS
 
 from .models import ChecklistItem
 from .models import Checklist
@@ -82,16 +86,23 @@ class IndexPage(TemplateView, ChecklistItemObjectMixin):
     def get_context_data(self, *args, **kwargs):
         projects = Project.objects.filter(name="MyChecklist")
         project = None
+        checklist_settings = None
         if projects:
             project = projects[0]
+            checklist_settings = ChecklistSettings.objects.get(project=project)
+            print "settings: ", type(checklist_settings.frequencybeforeexpiration)
 
         categories = None
         if project:
             categories = Category.objects.get_list(self.request.user, project.id)
 
+        itemTypeChoices = ITEM_TYPE
+
         return super(IndexPage, self).get_context_data(
             project=project,
             categories=categories,
+            checklist_settings=checklist_settings,
+            itemTypeChoices=itemTypeChoices,
             *args,
             **kwargs
         )
@@ -102,10 +113,14 @@ class ChecklistChecklistSettings(TemplateView):
     def get_context_data(self, project_id, *args, **kwargs):
         project = Project.objects.get_single(self.request.user, project_id)
         checklist_settings = ChecklistSettings.objects.get(project=project)
+        frequencyExpiredReminderChoices = FREQUENCY_EXPIRED_REMINDER
+        reminderBeforeExpirationChoices = REMINDER_BEFORE_EXPIRATION
 
         return super(ChecklistChecklistSettings, self).get_context_data(
             project=project,
             checklist_settings=checklist_settings,
+            frequencyExpiredReminderChoices=frequencyExpiredReminderChoices,
+            reminderBeforeExpirationChoices=reminderBeforeExpirationChoices,
             *args,
             **kwargs
         )
@@ -162,10 +177,14 @@ class ChecklistAddItem(TemplateView):
     def get_context_data(self, project_id, checklist_id, *args, **kwargs):
         category = Category.objects.get_single(self.request.user, project_id, checklist_id)
         expiryFactorChoices = EXPIRY_FACTOR
+        itemTypeChoices = ITEM_TYPE
+        perTypeChoices = PER_TYPE
 
         return super(ChecklistAddItem, self).get_context_data(
             category=category,
             expiryFactorChoices=expiryFactorChoices,
+            itemTypeChoices=itemTypeChoices,
+            perTypeChoices=perTypeChoices,
             *args,
             **kwargs
         )
@@ -196,6 +215,8 @@ class ChecklistAddItem(TemplateView):
         quantityfactor_str = self.request.POST.get('checklistItemQuantityFactor')
         quantityfactor = int(quantityfactor_str)
 
+        pertype = self.request.POST.get('checklistItemPerType')
+
         quantityunit = self.request.POST.get('checklistItemQuantityUnit')
         expiryfactor = self.request.POST.get('checklistItemExpiry')
         expiry = None
@@ -218,8 +239,8 @@ class ChecklistAddItem(TemplateView):
         else:
             totalnumber = 1 #for 'Custom' or 'Fixit'
 
-        if quantityfactor == 0:
-            quantity = 1 # this is for an item per household (e.g. first aid kit)
+        if pertype == "location":
+            quantity = quantityfactor # this is for an item per household (e.g. first aid kit)
         else:
             quantity = totalnumber * quantityfactor # this is for an item per member of household (e.g. water)
 
@@ -236,6 +257,7 @@ class ChecklistAddItem(TemplateView):
             checklistitemurl=checklistitemurl,
             checklistitemtype=checklistitemtype,
             quantityfactor=quantityfactor,
+            pertype=pertype,
             quantity=quantity,
             quantityunit=quantityunit,
             expiryfactor=expiryfactor,
@@ -301,9 +323,15 @@ class ChecklistEditItem(LoginRequiredMixin, ChecklistItemObjectMixin, TemplateVi
 
     def get_context_data(self, project_id, checklist_id, *args, **kwargs):
         category = Category.objects.get_single(self.request.user, project_id, checklist_id)
+        expiryFactorChoices = EXPIRY_FACTOR
+        itemTypeChoices = ITEM_TYPE
+        perTypeChoices = PER_TYPE
 
         return super(ChecklistEditItem, self).get_context_data(
             category=category,
+            expiryFactorChoices=expiryFactorChoices,
+            itemTypeChoices=itemTypeChoices,
+            perTypeChoices=perTypeChoices,
             *args,
             **kwargs
         )
@@ -324,6 +352,9 @@ class ChecklistEditItem(LoginRequiredMixin, ChecklistItemObjectMixin, TemplateVi
         checklistitemtype = self.request.POST.get('checklistItemType')
         quantityfactor_str = self.request.POST.get('checklistItemQuantityFactor')
         quantityfactor = int(quantityfactor_str)
+
+        pertype = self.request.POST.get('checklistItemPerType')
+
         quantityunit = self.request.POST.get('checklistItemQuantityUnit')
         expiryfactor = self.request.POST.get('checklistItemExpiry')
         expiry = None
@@ -349,8 +380,8 @@ class ChecklistEditItem(LoginRequiredMixin, ChecklistItemObjectMixin, TemplateVi
         else:
             totalnumber = 1 #for 'Custom' or 'Fixit'
 
-        if quantityfactor == 0:
-            quantity = 1 # this is for an item per household (e.g. first aid kit)
+        if pertype == "location":
+            quantity = quantityfactor # this is for an item per household (e.g. first aid kit)
         else:
             quantity = totalnumber * quantityfactor # this is for an item per member of household (e.g. water)
 
@@ -365,6 +396,7 @@ class ChecklistEditItem(LoginRequiredMixin, ChecklistItemObjectMixin, TemplateVi
             "checklistitemurl": checklistitemurl,
             "checklistitemtype": checklistitemtype,
             "quantityfactor": quantityfactor,
+            "pertype": pertype,
             "quantity": quantity,
             "quantityunit": quantityunit,
             "expiryfactor": expiryfactor,
@@ -380,9 +412,11 @@ class ChecklistAddChecklist(TemplateView):
     template_name = 'checklist_add_checklist.html'
 
     def get_context_data(self, project_id, *args, **kwargs):
+        typeChoices = TYPE
 
         return super(ChecklistAddChecklist, self).get_context_data(
             project_id=project_id,
+            typeChoices=typeChoices,
             *args,
             **kwargs
         )
@@ -469,78 +503,86 @@ class ChecklistAddChecklist(TemplateView):
             longitude=longitude
         )
 
-        """
-        if checklisttype == "Home":
+        default_items = DEFAULT_ITEMS
 
-            if numberofpeople > 0:
-                #stuff
-            if numberofchildren > 0:
-                #stuff
-            if numberoftoddlers > 0:
-                #stuff
-            if numberofinfants > 0:
-                #stuff
-            if numberofpets > 0:
-                #stuff
+        for item_dict in default_items:
 
-        elif checklisttype == "Work":
+            dict_checklisttype = ""
+            dict_name = ""
+            dict_checklistitemdescription = ""
+            dict_checklistitemurl = ""
+            dict_checklistitemtype = ""
+            dict_quantityfactor = ""
+            dict_pertype = ""
+            dict_quantityunit = ""
+            dict_expiryfactor = ""
 
-            if numberofpeople > 0:
-                #stuff
-            if numberofchildren > 0:
-                #stuff
-            if numberoftoddlers > 0:
-                #stuff
-            if numberofinfants > 0:
-                #stuff
-            if numberofpets > 0:
-                #stuff
+            for key in item_dict:
+                if key == "checklisttype":
+                    dict_checklisttype = item_dict[key]
+                elif key == "name":
+                    dict_name = item_dict[key]
+                elif key == "checklistitemdescription":
+                    dict_checklistitemdescription = item_dict[key]
+                elif key == "checklistitemurl":
+                    dict_checklistitemurl = item_dict[key]
+                elif key == "checklistitemtype":
+                    dict_checklistitemtype = item_dict[key]
+                elif key == "quantityfactor":
+                    dict_quantityfactor = item_dict[key]
+                elif key == "pertype":
+                    dict_pertype = item_dict[key]
+                elif key == "quantityunit":
+                    dict_quantityunit = item_dict[key]
+                elif key == "expiryfactor":
+                    dict_expiryfactor = item_dict[key]
 
-        elif checklisttype == "School":
+            #create the default items from the given values
+            if dict_checklisttype == checklisttype:
+                totalnumber = 1
+                quantity = 0
 
-            if numberofpeople > 0:
-                #stuff
-            if numberofchildren > 0:
-                #stuff
-            if numberoftoddlers > 0:
-                #stuff
-            if numberofinfants > 0:
-                #stuff
-            if numberofpets > 0:
-                #stuff
+                if dict_checklistitemtype == "Essential" or dict_checklistitemtype == "Useful" or dict_checklistitemtype == "Personal":
+                    totalnumber_float = float(numberofpeople) + (float(numberofchildren) * 0.5) + (float(numberoftoddlers) * 0.3) + (float(numberofinfants) * 0.1) + (float(numberofpets) * 0.1)
+                    totalnumber = int(math.ceil(totalnumber_float))
+                elif dict_checklistitemtype == "Children":
+                    totalnumber = int(numberofchildren)
+                elif dict_checklistitemtype == "Toddlers":
+                    totalnumber = int(numberoftoddlers)
+                elif dict_checklistitemtype == "Infants":
+                    totalnumber = int(numberofinfants)
+                elif dict_checklistitemtype == "Pets":
+                    totalnumber = int(numberofpets)
+                else:
+                    totalnumber = 1 #for 'Custom' or 'Fixit'
 
-        elif checklisttype == "Vehicle":
+                if dict_pertype == "location":
+                    quantity = int(dict_quantityfactor) # this is for an item per household (e.g. first aid kit)
+                else:
+                    quantity = totalnumber * int(dict_quantityfactor) # this is for an item per member of household (e.g. water)
 
-            if numberofpeople > 0:
-                #stuff
-            if numberofchildren > 0:
-                #stuff
-            if numberoftoddlers > 0:
-                #stuff
-            if numberofinfants > 0:
-                #stuff
-            if numberofpets > 0:
-                #stuff
+                if quantity > 0:
+                    field = Field.create(dict_name, dict_name, "", False, category, 'TextField')
 
-        elif checklisttype == "PlaceOfWorship":
+                    checklist_item = ChecklistItem.objects.create(
+                        name=dict_name,
+                        project=project,
+                        category=category,
+                        field=field,
+                        creator=creator,
+                        #checklisttype=checklisttype,
+                        checklistitemdescription=dict_checklistitemdescription,
+                        checklistitemurl=dict_checklistitemurl,
+                        checklistitemtype=dict_checklistitemtype,
+                        quantityfactor=dict_quantityfactor,
+                        pertype=dict_pertype,
+                        quantity=quantity,
+                        quantityunit=dict_quantityunit,
+                        expiryfactor=dict_expiryfactor,
+                        expiry=None,
+                        haveit=False
+                    )
 
-            if numberofpeople > 0:
-                #stuff
-            if numberofchildren > 0:
-                #stuff
-            if numberoftoddlers > 0:
-                #stuff
-            if numberofinfants > 0:
-                #stuff
-            if numberofpets > 0:
-                #stuff
-
-        elif checklisttype == "Blank":
-            #We don't want to add any checklist items
-
-        else:
-            #do nothing
-        """
         successful_message = checklist.name + " has been added."
         messages.success(self.request, successful_message)
         return redirect('geokey_checklist:index', checklist_id=category.id)

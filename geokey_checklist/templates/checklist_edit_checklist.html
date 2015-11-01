@@ -17,21 +17,6 @@
 <div class="container">
     {% include 'snippets/messages.html' %}
 
-    <!--div class="row">
-        <div class="col-sm-4">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h6 class="item-info">Extension</h6>
-                    <h3>{{ name }}</h3>
-                </div>
-                <div class="list-group">
-                </div>
-            </div>
-        </div>
-        <div class="col-sm-8">
-        </div>
-    </div-->
-
   <div>
     <h3 class="header">Edit checklist {{category.name}}</h3>
       <form method="POST" action="{% url 'geokey_checklist:checklist_edit_checklist' category.project.id category.id %}" novalidate>

@@ -3,6 +3,8 @@ from django.db import models
 
 from .base import TYPE
 from .base import ITEM_TYPE
+from .base import EXPIRY_FACTOR
+from .base import PER_TYPE
 from .base import FREQUENCY_EXPIRED_REMINDER
 from .base import REMINDER_BEFORE_EXPIRATION
 
@@ -37,7 +39,7 @@ class ChecklistSettings(models.Model):
     project = models.ForeignKey('projects.Project')
     reminderson = models.BooleanField(default=True)
     frequencyonexpiration = models.CharField(choices=FREQUENCY_EXPIRED_REMINDER, default=FREQUENCY_EXPIRED_REMINDER.twice, max_length=100)
-    frequencybeforeexpiration = models.CharField(choices=REMINDER_BEFORE_EXPIRATION, default=REMINDER_BEFORE_EXPIRATION.one_week, max_length=100)
+    frequencybeforeexpiration = models.CharField(choices=REMINDER_BEFORE_EXPIRATION, default=REMINDER_BEFORE_EXPIRATION.six_months, max_length=100)
 
 class ChecklistItem(models.Model):
 
@@ -47,15 +49,13 @@ class ChecklistItem(models.Model):
     name = models.CharField(max_length=100)
     project = models.ForeignKey('projects.Project')
     category = models.ForeignKey('categories.Category')
-    #checklist = models.ForeignKey('Checklist');
-    #checklist = models.ForeignKey('Checklist', null=True)
     field = models.ForeignKey('categories.Field')
     creator = models.ForeignKey(settings.AUTH_USER_MODEL)
-    #checklisttype = models.CharField(choices=TYPE, max_length=100)
     checklistitemdescription = models.CharField(max_length=100, null=True)
     checklistitemurl = models.CharField(max_length=255, null=True)
     checklistitemtype = models.CharField(choices=ITEM_TYPE, default=ITEM_TYPE.Custom, max_length=100)
     quantityfactor = models.IntegerField()
+    pertype = models.CharField(choices=PER_TYPE, default=PER_TYPE.individual, max_length=100)
     quantity = models.IntegerField()
     quantityunit = models.CharField(max_length=100, null=True)
     expiryfactor = models.IntegerField(null=True)

@@ -17,21 +17,6 @@
 <div class="container">
     {% include 'snippets/messages.html' %}
 
-    <!--div class="row">
-        <div class="col-sm-4">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h6 class="item-info">Extension</h6>
-                    <h3>{{ name }}</h3>
-                </div>
-                <div class="list-group">
-                </div>
-            </div>
-        </div>
-        <div class="col-sm-8">
-        </div>
-    </div-->
-
   <div>
     <h3 class="header">Edit a checklist item for {{category.name}}</h3>
       <form method="POST" action="{% url 'geokey_checklist:checklist_edit_item' category.project.id category.id checklist_item.id %}" novalidate>
@@ -43,8 +28,27 @@
         </div>
 
         <div class="form-group">
-          <label for="checklistItemQuantityFactor" class="control-label">QuantityFactor (required)</label>
-          <input type="number" class="form-control input-lg" name="checklistItemQuantityFactor" min="0" value="{{checklist_item.quantityfactor}}"  required>
+          <table>
+            <tr>
+              <td>
+                <label for="checklistItemQuantityFactor" class="control-label">Amount (required)</label>
+              </td>
+              <td class="col-md-3">
+                <input type="number" class="form-control input-lg" name="checklistItemQuantityFactor" min="1" value="{{checklist_item.quantityfactor}}"  required>
+              </td>
+              <td>
+                <select class="form control input-lg" name="checklistItemPerType">
+                  {% for value, label in perTypeChoices %}
+                    {% if checklist_item.pertype == value %}
+                      <option value="{{value}}" selected>{{label}}</option>
+                    {% else %}
+                      <option value="{{value}}">{{label}}</option>
+                    {% endif %}
+                  {% endfor %}
+                </select>
+              </td>
+            </tr>
+          </table>
         </div>
 
         <div class="form-group">
@@ -65,82 +69,26 @@
         <div class ="form-group">
           <label for="checklistItemExpiry" class="control-label">Expiry</label>
           <select class="form-control input-lg" name="checklistItemExpiry">
-            {% if checklist_item.expiryfactor == 1 %}
-              <option value="1" selected>1 day</option>
-            {% else %}
-              <option value="1">1 day</option>
-            {% endif %}
-
-            {% if checklist_item.expiryfactor == 7 %}
-              <option value="7" selected>1 week</option>
-            {% else %}
-              <option value="7">1 week</option>
-            {% endif %}
-
-            {% if checklist_item.expiryfactor == 30 %}
-              <option value="30" selected>1 month</option>
-            {% else %}
-              <option value="30">1 month</option>
-            {% endif %}
+            {% for value, label in expiryFactorChoices %}
+              {% if checklist_item.expiryfactor|slugify == value %}
+                <option value="{{value}}" selected>{{label}}</option>
+              {% else %}
+                <option value="{{value}}">{{label}}</option>
+              {% endif %}
+            {% endfor %}
           </select>
         </div>
 
         <div class ="form-group">
           <label for="checklistItemType" class="control-label">Item Type</label>
           <select class="form-control input-lg" name="checklistItemType">
-            {% if checklist_item.checklistitemtype == "Essential" %}
-              <option value="Essential" selected>Essential</option>
-            {% else %}
-              <option value="Essential">Essential</option>
-            {% endif %}
-
-            {% if checklist_item.checklistitemtype == "Useful" %}
-              <option value="Useful" selected>Useful</option>
-            {% else %}
-              <option value="Useful">Useful</option>
-            {% endif %}
-
-            {% if checklist_item.checklistitemtype == "Personal" %}
-              <option value="Personal" selected>Personal</option>
-            {% else %}
-              <option value="Personal">Personal</option>
-            {% endif %}
-
-            {% if checklist_item.checklistitemtype == "Fixit" %}
-              <option value="Fixit" selected>Fix It</option>
-            {% else %}
-              <option value="Fixit">Fix It</option>
-            {% endif %}
-
-            {% if checklist_item.checklistitemtype == "Children" %}
-              <option value="Children" selected>Children</option>
-            {% else %}
-              <option value="Children">Children</option>
-            {% endif %}
-
-            {% if checklist_item.checklistitemtype == "Toddlers" %}
-              <option value="Toddlers" selected>Toddlers</option>
-            {% else %}
-              <option value="Toddlers">Toddlers</option>
-            {% endif %}
-
-            {% if checklist_item.checklistitemtype == "Infants" %}
-              <option value="Infants" selected>Infants</option>
-            {% else %}
-              <option value="Infants">Infants</option>
-            {% endif %}
-
-            {% if checklist_item.checklistitemtype == "Pets" %}
-              <option value="Pets" selected>Pets</option>
-            {% else %}
-              <option value="Pets">Pets</option>
-            {% endif %}
-
-            {% if checklist_item.checklistitemtype == "Custom" %}
-              <option value="Custom" selected>Custom</option>
-            {% else %}
-              <option value="Custom">Custom</option>
-            {% endif %}
+            {% for value, label in itemTypeChoices %}
+              {% if checklist_item.checklistitemtype == value %}
+                <option value="{{value}}" selected>{{label}}</option>
+              {% else %}
+                <option value="{{value}}">{{label}}</option>
+              {% endif %}
+            {% endfor %}
           </select>
         </div>
 

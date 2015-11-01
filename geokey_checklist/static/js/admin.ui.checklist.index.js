@@ -129,9 +129,9 @@
                           var quantityunit = "";
                           var expiry = Date.now();
                           var checklistitemtype = "";
+                          var pertype = "";
 
                           for(var key2 in cid_obj) {
-                            //alert(key2 + " : " + cid_obj[key2] + " : " + typeof(cid_obj[key2]));
                             switch(key2) {
                               case "id":
                                 id = cid_obj[key2];
@@ -170,20 +170,16 @@
                                 break;
 
                               case "checklistitemtype":
-                                  checklistitemtype = cid_obj[key2];
-                                  break;
+                                checklistitemtype = cid_obj[key2];
+                                break;
+                              case "pertype":
+                                pertype = cid_obj[key2];
+                                break;
 
                               default:
                                 //do nothing
                             }
                           }
-
-                          //alert("id:" + id + " name:" + name);
-
-                          //if(name == "Fixit") {
-                          //  var checklistFixitLink = $('[name=checklist-fixit-link]');
-                          //  checklistFixitLink.attr('href','/admin/checklist/' + id + '/');
-                          //}
 
                           var rowHTML = "<tr name='item" + id + "'>";
 
@@ -208,6 +204,7 @@
                           rowHTML += "<td class='text-center'>" + name + "</td>";
                           rowHTML += "<td class='text-center'>" + quantity + "</td>";
                           rowHTML += "<td class='text-center'>" + quantityunit + "</td>";
+                          rowHTML += "<td class='text-center'>" + pertype + "</td>";
                           if(url == "" || url == "null" || url == null) {
                             rowHTML += "<td class='text-center'>" + description + "</td>";
                           } else {
@@ -224,17 +221,79 @@
                           rowHTML += "<td class='text-center'>" + "<a href='/admin/checklist/" + project_id + "/" + category_id + "/delete-item/" + id + "/' name='checklist-item-delete" + id + "' class='btn btn-primary'>Delete</a>" + "</td>";
                           rowHTML += "</tr>";
 
-                          //if(expiry < now())
-                          //{
-                          //  expired_div.show();
-                          //  checklistItemsTableExpired.append(rowHTML);
-                          //}
-                          //else if( expiry < (now() - 7) )
-                          //{
-                          //  expiring_soon_div.show();
-                          //  checklistItemsTableExpiringSoon.append(rowHTML);
-                          //}
-                          //else {
+                          if(expiry)
+                          {
+                            var now = new Date()
+                            var expiry_date = new Date(expiry);
+                            var compare_date = new Date(expiry);
+                            var settings_reminder = $('input[name=checklist-settings-frequency-reminder]');
+                            var settings_reminder_val = parseInt(settings_reminder.val());
+                            compare_date.setDate(compare_date.getDate() - settings_reminder_val);
+
+                            if(expiry_date < now)
+                            {
+                              expired_div.show();
+                              checklistItemsTableExpired.append(rowHTML);
+                            }
+                            else if(compare_date < now) {
+                              expiring_soon_div.show();
+                              checklistItemsTableExpiringSoon.append(rowHTML);
+                            }
+                            else{
+                              switch(checklistitemtype)
+                              {
+                                case "Essential":
+                                  essential_div.show();
+                                  checklistItemsTableEssential.append(rowHTML);
+                                  break;
+
+                                case "Useful":
+                                  useful_div.show();
+                                  checklistItemsTableUseful.append(rowHTML);
+                                  break;
+
+                                case "Personal":
+                                  personal_div.show();
+                                  checklistItemsTablePersonal.append(rowHTML);
+                                  break;
+
+                                case "Fixit":
+                                  fixit_div.show();
+                                  checklistItemsTableFixit.append(rowHTML);
+                                  break;
+
+                                case "Children":
+                                  children_div.show();
+                                  checklistItemsTableChildren.append(rowHTML);
+                                  break;
+
+                                case "Toddlers":
+                                  toddlers_div.show();
+                                  checklistItemsTableToddlers.append(rowHTML);
+                                  break;
+
+                                case "Infants":
+                                  infants_div.show();
+                                  checklistItemsTableInfants.append(rowHTML);
+                                  break;
+
+                                case "Pets":
+                                  pets_div.show();
+                                  checklistItemsTablePets.append(rowHTML);
+                                  break;
+
+                                case "Custom":
+                                  custom_div.show();
+                                  checklistItemsTableCustom.append(rowHTML);
+                                  break;
+                                default:
+                                  //do nothing
+                                }
+
+                            }
+
+                          }
+                          else {
 
                             switch(checklistitemtype)
                             {
@@ -285,7 +344,7 @@
                               default:
                                 //do nothing
                               }
-                            //}
+                            }
                         }
                     }
                 }
