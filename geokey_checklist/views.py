@@ -80,17 +80,16 @@ class ChecklistItemObjectMixin(object):
                 'error': 'Not found.'
             }
 
-class IndexPage(TemplateView, ChecklistItemObjectMixin):
+class IndexPage(LoginRequiredMixin, TemplateView, ChecklistItemObjectMixin):
     template_name = 'checklist_index.html'
 
     def get_context_data(self, *args, **kwargs):
         projects = Project.objects.filter(name="MyChecklist")
         project = None
-        checklist_settings = None
+        #checklist_settings = None
         if projects:
             project = projects[0]
-            checklist_settings = ChecklistSettings.objects.get(project=project)
-            print "settings: ", type(checklist_settings.frequencybeforeexpiration)
+            #checklist_settings = ChecklistSettings.objects.get(project=project)
 
         categories = None
         if project:
@@ -101,49 +100,62 @@ class IndexPage(TemplateView, ChecklistItemObjectMixin):
         return super(IndexPage, self).get_context_data(
             project=project,
             categories=categories,
-            checklist_settings=checklist_settings,
+            #checklist_settings=checklist_settings,
             itemTypeChoices=itemTypeChoices,
             *args,
             **kwargs
         )
 
-class ChecklistChecklistSettings(TemplateView):
+class ChecklistChecklistSettings(LoginRequiredMixin, TemplateView):
     template_name = 'checklist_settings.html'
 
     def get_context_data(self, project_id, *args, **kwargs):
         project = Project.objects.get_single(self.request.user, project_id)
-        checklist_settings = ChecklistSettings.objects.get(project=project)
+        try:
+            checklist_settings = ChecklistSettings.objects.get(project=project)
+        except:
+            checklist_settings = None
         frequencyExpiredReminderChoices = FREQUENCY_EXPIRED_REMINDER
-        reminderBeforeExpirationChoices = REMINDER_BEFORE_EXPIRATION
+        #reminderBeforeExpirationChoices = REMINDER_BEFORE_EXPIRATION
 
         return super(ChecklistChecklistSettings, self).get_context_data(
             project=project,
             checklist_settings=checklist_settings,
             frequencyExpiredReminderChoices=frequencyExpiredReminderChoices,
-            reminderBeforeExpirationChoices=reminderBeforeExpirationChoices,
+            #reminderBeforeExpirationChoices=reminderBeforeExpirationChoices,
             *args,
             **kwargs
         )
 
     def post(self, request, project_id):
         project = Project.objects.get_single(self.request.user, project_id)
-        checklist_settings = ChecklistSettings.objects.get(project=project)
+        try:
+            checklist_settings = ChecklistSettings.objects.get(project=project)
+        except:
+            checklist_settings = None
 
-        reminderson_radio = self.request.POST.get('checklistRemindersOn')
-        reminderson = True
-        if reminderson_radio == "No":
-            reminderson = False
-        frequencybeforeexpiration = self.request.POST.get('checklistReminderBeforeExpiration')
-        frequencyonexpiration = self.request.POST.get('checklistReminderAfterExpiration')
+        if checklist_settings != None:
 
-        setattr(checklist_settings, "reminderson", reminderson)
-        setattr(checklist_settings, "frequencybeforeexpiration", frequencybeforeexpiration)
-        setattr(checklist_settings, "frequencyonexpiration", frequencyonexpiration)
-        checklist_settings.save()
+            reminderson_radio = self.request.POST.get('checklistRemindersOn')
+            reminderson = True
+            if reminderson_radio == "No":
+                reminderson = False
+            #frequencybeforeexpiration = self.request.POST.get('checklistReminderBeforeExpiration')
+            frequencyonexpiration = self.request.POST.get('checklistReminderAfterExpiration')
 
-        successful_message = "Settings have been saved."
-        messages.success(self.request, successful_message)
-        return redirect('geokey_checklist:index')
+            setattr(checklist_settings, "reminderson", reminderson)
+            #setattr(checklist_settings, "frequencybeforeexpiration", frequencybeforeexpiration)
+            setattr(checklist_settings, "frequencyonexpiration", frequencyonexpiration)
+            checklist_settings.save()
+
+            successful_message = "Settings have been saved."
+            messages.success(self.request, successful_message)
+            return redirect('geokey_checklist:index')
+
+        else:
+            error_message = "There was an error in attempting to save your settings. Please contact the system administrator for further assistance."
+            messages.error(self.request, error_message)
+            return redirect('geokey_checklist:index')
 
 class ChecklistIndexUpdateItems(LoginRequiredMixin, APIView, ChecklistItemObjectMixin):
 

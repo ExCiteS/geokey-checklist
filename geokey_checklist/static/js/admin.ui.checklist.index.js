@@ -88,8 +88,8 @@
 
         var expired_div = $('div[name=checklist-items-expired-div]');
         expired_div.hide();
-        var expiring_soon_div = $('div[name=checklist-items-expiring-soon-div]');
-        expiring_soon_div.hide();
+        //var expiring_soon_div = $('div[name=checklist-items-expiring-soon-div]');
+        //expiring_soon_div.hide();
 
         var essential_div = $('div[name=checklist-items-essential-div]');
         essential_div.hide();
@@ -225,20 +225,20 @@
                           {
                             var now = new Date()
                             var expiry_date = new Date(expiry);
-                            var compare_date = new Date(expiry);
-                            var settings_reminder = $('input[name=checklist-settings-frequency-reminder]');
-                            var settings_reminder_val = parseInt(settings_reminder.val());
-                            compare_date.setDate(compare_date.getDate() - settings_reminder_val);
+                            //var compare_date = new Date(expiry);
+                            //var settings_reminder = $('input[name=checklist-settings-frequency-reminder]');
+                            //var settings_reminder_val = parseInt(settings_reminder.val());
+                            //compare_date.setDate(compare_date.getDate() - settings_reminder_val);
 
                             if(expiry_date < now)
                             {
                               expired_div.show();
                               checklistItemsTableExpired.append(rowHTML);
                             }
-                            else if(compare_date < now) {
-                              expiring_soon_div.show();
-                              checklistItemsTableExpiringSoon.append(rowHTML);
-                            }
+                            //else if(compare_date < now) {
+                            //  expiring_soon_div.show();
+                            //  checklistItemsTableExpiringSoon.append(rowHTML);
+                            //}
                             else{
                               switch(checklistitemtype)
                               {

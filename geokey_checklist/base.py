@@ -22,7 +22,7 @@ ITEM_TYPE = Choices(
 )
 
 EXPIRY_FACTOR = Choices(
-    ('-1', 'Yesterday'),
+    #('-1', 'Yesterday'), #this is only for testing purposes
     ('30', 'One Month'),
     ('60', 'Two Months'),
     ('90', 'Three Months'),
@@ -40,9 +40,11 @@ PER_TYPE = Choices(
 )
 
 FREQUENCY_EXPIRED_REMINDER = Choices(
-    ('once', 'once'),
-    ('twice', 'twice'),
-    ('never', 'never')
+    (30, 'one_month', 'every month'),
+    (60, 'two_months', 'every two months'),
+    (90, 'three_months', 'every three months'),
+    (180, 'six_months', 'every six months'),
+    (365, 'one_year', 'once a year')
 )
 
 REMINDER_BEFORE_EXPIRATION = Choices(
@@ -139,6 +141,16 @@ DEFAULT_ITEMS = [
 {'checklisttype':'Home','name':'Shovel','checklistitemdescription':'','checklistitemurl':'','checklistitemtype':'Useful','quantityfactor':'1','pertype':'location','quantityunit':'shovel','expiryfactor':'365'},
 {'checklisttype':'Home','name':'Bucket','checklistitemdescription':'','checklistitemurl':'','checklistitemtype':'Useful','quantityfactor':'1','pertype':'location','quantityunit':'bucket','expiryfactor':'365'},
 {'checklisttype':'Home','name':'Heavy Duty Trashbags','checklistitemdescription':'','checklistitemurl':'','checklistitemtype':'Useful','quantityfactor':'1','pertype':'location','quantityunit':'box','expiryfactor':'365'},
-{'checklisttype':'Home','name':'Toilet Paper','checklistitemdescription':'','checklistitemurl':'','checklistitemtype':'Essential','quantityfactor':'1','pertype':'individual','quantityunit':'roll','expiryfactor':'365'}
+{'checklisttype':'Home','name':'Toilet Paper','checklistitemdescription':'','checklistitemurl':'','checklistitemtype':'Essential','quantityfactor':'1','pertype':'individual','quantityunit':'roll','expiryfactor':'365'},
+{'checklisttype':'Home','name':'TV is secured','checklistitemdescription':'with velcro, pad, straps, or locks','checklistitemurl':'','checklistitemtype':'Fixit','quantityfactor':'1','pertype':'location','quantityunit':'','expiryfactor':'180'},
+{'checklisttype':'Home','name':'Computer is secured','checklistitemdescription':'with velcro, pad, straps, or locks','checklistitemurl':'','checklistitemtype':'Fixit','quantityfactor':'1','pertype':'location','quantityunit':'','expiryfactor':'180'},
+{'checklisttype':'Home','name':'Bookcase is secured to the wall','checklistitemdescription':'using nylon strap','checklistitemurl':'','checklistitemtype':'Fixit','quantityfactor':'1','pertype':'location','quantityunit':'','expiryfactor':'180'},
+{'checklisttype':'Home','name':'Large cabinet is secured to the wall','checklistitemdescription':'using nylon strap','checklistitemurl':'','checklistitemtype':'Fixit','quantityfactor':'1','pertype':'location','quantityunit':'','expiryfactor':'180'},
+{'checklisttype':'Home','name':'No objects are placed above sofas and beds','checklistitemdescription':'framed pictures, mirrors, etc.','checklistitemurl':'','checklistitemtype':'Fixit','quantityfactor':'1','pertype':'location','quantityunit':'','expiryfactor':'180'},
+{'checklisttype':'Home','name':'Exits are clear of obstruction','checklistitemdescription':'','checklistitemurl':'','checklistitemtype':'Fixit','quantityfactor':'1','pertype':'location','quantityunit':'','expiryfactor':'180'},
+{'checklisttype':'Home','name':'Functioning smoke alarms and knowing how and how often to test them','checklistitemdescription':'','checklistitemurl':'','checklistitemtype':'Fixit','quantityfactor':'1','pertype':'location','quantityunit':'','expiryfactor':'180'},
+{'checklisttype':'Home','name':'Having an in date fire extinguisher','checklistitemdescription':'','checklistitemurl':'','checklistitemtype':'Fixit','quantityfactor':'1','pertype':'location','quantityunit':'','expiryfactor':'180'},
+{'checklisttype':'Home','name':'No overcharged plugs','checklistitemdescription':'no multiplugs plugged into multiplugs','checklistitemurl':'','checklistitemtype':'Fixit','quantityfactor':'1','pertype':'location','quantityunit':'','expiryfactor':'180'}
+
 
 ]

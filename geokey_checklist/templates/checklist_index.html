@@ -37,7 +37,7 @@
             </select>
           </td>
           <!--td>INFO</td-->
-          <td class="col-md-1"><input type="hidden" name="checklist-settings-frequency-reminder" value="{{checklist_settings.frequencybeforeexpiration}}"/><a href="" name="checklist-settings" class="btn btn-success btn-lg">Settings</a></td>
+          <td class="col-md-1"><a href="" name="checklist-settings" class="btn btn-success btn-lg">Settings</a></td>
           <td class="col-md-1"><a href="" name="checklist-add-checklist-link" class="btn btn-success btn-lg">New</a></td>
           <td class="col-md-1"><a href="" name="checklist-edit-checklist-link" class="btn btn-success btn-lg">Edit</a></td>
           <td class="col-md-1"><a href="" name="checklist-delete-checklist-link" class="btn btn-success btn-lg">Delete</a></td>
@@ -74,7 +74,7 @@
         </table>
       </div>
 
-      <div name="checklist-items-expiring-soon-div" style="margin-bottom:20px;">
+      <!--div name="checklist-items-expiring-soon-div" style="margin-bottom:20px;">
         <h4>EXPIRING SOON</h4>
         <table name="checklist-items-expiring-soon" class="table-bordered">
           <thead>
@@ -93,7 +93,7 @@
           <tbody>
           </tbody>
         </table>
-      </div>
+      </div-->
 
       {% for value, label in itemTypeChoices %}
         <div name="checklist-items-{{value|lower}}-div" style="margin-bottom:20px;">
@@ -121,6 +121,9 @@
       <div class="text-center" style="margin-bottom:20px;">
         <a href="" name="checklist-add-item-link" class="btn btn-success btn-lg">Add an Item</a>
       </div>
+      <!--div class="text-center" style="margin-bottom:20px;">
+        <input type="button" class="btn btn-success btn-lg" value="Print" onclick="window.print();" />
+      </div-->
     </div>
 
 </div>

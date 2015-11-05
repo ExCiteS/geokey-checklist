@@ -38,8 +38,9 @@ class ChecklistSettings(models.Model):
     """
     project = models.ForeignKey('projects.Project')
     reminderson = models.BooleanField(default=True)
-    frequencyonexpiration = models.CharField(choices=FREQUENCY_EXPIRED_REMINDER, default=FREQUENCY_EXPIRED_REMINDER.twice, max_length=100)
-    frequencybeforeexpiration = models.CharField(choices=REMINDER_BEFORE_EXPIRATION, default=REMINDER_BEFORE_EXPIRATION.six_months, max_length=100)
+    frequencyonexpiration = models.CharField(choices=FREQUENCY_EXPIRED_REMINDER, default=FREQUENCY_EXPIRED_REMINDER.one_month, max_length=100)
+    #frequencybeforeexpiration = models.CharField(choices=REMINDER_BEFORE_EXPIRATION, default=REMINDER_BEFORE_EXPIRATION.six_months, max_length=100)
+    lastremindercheck = models.DateTimeField(null=True)
 
 class ChecklistItem(models.Model):
 
