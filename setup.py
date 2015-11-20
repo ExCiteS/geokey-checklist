@@ -11,7 +11,7 @@ repository = join('https://github.com/ExCiteS', name)
 setup(
     name=name,
     version=version,
-    description='',
+    description='Create checklists for GeoKey',
     url=repository,
     download_url=join(repository, 'tarball', version),
     author='Patrick Rickles',
