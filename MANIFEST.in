@@ -1,2 +1,5 @@
-recursive-include geokey_checklist/templates *
-recursive-include geokey_checklist/migrations *
+include README.rst
+include LICENSE
+recursive-include geokey_export/static *
+recursive-include geokey_export/templates *
+recursive-include geokey_export/migrations *
