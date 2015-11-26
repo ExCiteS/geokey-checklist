@@ -84,7 +84,7 @@ class IndexPage(LoginRequiredMixin, TemplateView, ChecklistItemObjectMixin):
     template_name = 'checklist_index.html'
 
     def get_context_data(self, *args, **kwargs):
-        projects = Project.objects.filter(user=self.request.user, name="MyChecklist")
+        projects = Project.objects.filter(creator=self.request.user, name="MyChecklist")
         project = None
         #checklist_settings = None
         if projects:
