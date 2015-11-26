@@ -1,6 +1,7 @@
 from django.test import TestCase
 from django.http import HttpRequest
 from django.contrib.auth.models import AnonymousUser
+from django.contrib.messages.storage.fallback import FallbackStorage
 from django.template.loader import render_to_string
 from django.contrib.sites.shortcuts import get_current_site
 
@@ -90,7 +91,6 @@ class ChecklistChecklistSettingsTest(TestCase):
         user = UserF.create()
         project = ProjectF.create(**{'creator': user})
 
-        from django.contrib.messages.storage.fallback import FallbackStorage
         setattr(self.request, 'session', 'session')
         messages = FallbackStorage(self.request)
         setattr(self.request, '_messages', messages)
@@ -120,7 +120,7 @@ class ChecklistChecklistSettingsTest(TestCase):
             'reminderson': True,
             'frequencyonexpiration': '30'
         }
-        from django.contrib.messages.storage.fallback import FallbackStorage
+
         setattr(self.request, 'session', 'session')
         messages = FallbackStorage(self.request)
         setattr(self.request, '_messages', messages)
