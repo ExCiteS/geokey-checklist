@@ -22,7 +22,7 @@ ITEM_TYPE = Choices(
 )
 
 EXPIRY_FACTOR = Choices(
-    #('-1', 'Yesterday'), #this is only for testing purposes
+    ('-1', 'Yesterday'), #this is only for testing purposes
     ('30', 'One Month'),
     ('60', 'Two Months'),
     ('90', 'Three Months'),
@@ -94,7 +94,7 @@ DEFAULT_ITEMS = [
 {'checklisttype':'Home','name':'Pacifier','checklistitemdescription':'','checklistitemurl':'','checklistitemtype':'Infants','quantityfactor':'2','pertype':'individual','quantityunit':'pacifiers','expiryfactor':'180'},
 {'checklisttype':'Home','name':'Bottles','checklistitemdescription':'','checklistitemurl':'','checklistitemtype':'Infants','quantityfactor':'1','pertype':'individual','quantityunit':'bottles','expiryfactor':'180'},
 {'checklisttype':'Home','name':'Warm Blanket (Infants)','checklistitemdescription':'','checklistitemurl':'','checklistitemtype':'Infants','quantityfactor':'1','pertype':'individual','quantityunit':'blanket(s)','expiryfactor':'180'},
-{'checklisttype':'Home','name':'Nursing Items (e.g. nursing pads, nipple cream/shield)','checklistitemdescription':'','checklistitemurl':'','checklistitemtype':'Infants','quantityfactor':'1','pertype':'location','quantityunit':'item','expiryfactor':'180'},
+#{'checklisttype':'Home','name':'Nursing Items (e.g. nursing pads, nipple cream/shield)','checklistitemdescription':'','checklistitemurl':'','checklistitemtype':'Infants','quantityfactor':'1','pertype':'location','quantityunit':'item','expiryfactor':'180'},
 {'checklisttype':'Home','name':'Feminine Hygiene Products','checklistitemdescription':'','checklistitemurl':'','checklistitemtype':'Personal','quantityfactor':'1','pertype':'individual','quantityunit':'box','expiryfactor':'180'},
 {'checklisttype':'Home','name':'Birth Control','checklistitemdescription':'','checklistitemurl':'','checklistitemtype':'Personal','quantityfactor':'1','pertype':'individual','quantityunit':'month supply','expiryfactor':'365'},
 {'checklisttype':'Home','name':'Prescription Medication & Glasses','checklistitemdescription':'','checklistitemurl':'','checklistitemtype':'Personal','quantityfactor':'1','pertype':'individual','quantityunit':'month supply','expiryfactor':'365'},

@@ -61,4 +61,4 @@ class ChecklistSettingsFactory(factory.django.DjangoModelFactory):
 
     reminderson = True
     frequencyonexpiration = 'twice'
-    frequencybeforeexpiration = 180
+    #frequencybeforeexpiration = 180

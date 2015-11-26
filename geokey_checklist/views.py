@@ -84,7 +84,7 @@ class IndexPage(LoginRequiredMixin, TemplateView, ChecklistItemObjectMixin):
     template_name = 'checklist_index.html'
 
     def get_context_data(self, *args, **kwargs):
-        projects = Project.objects.filter(name="MyChecklist")
+        projects = Project.objects.filter(user=self.request.user, name="MyChecklist")
         project = None
         #checklist_settings = None
         if projects:
@@ -447,7 +447,7 @@ class ChecklistAddChecklist(TemplateView):
                 project=project,
                 reminderson=True,
                 frequencyonexpiration='twice',
-                frequencybeforeexpiration='one_week'
+                #frequencybeforeexpiration='one_week'
             )
         else:
             project = Project.objects.get_single(self.request.user, project_id)
