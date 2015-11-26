@@ -129,9 +129,6 @@ class ChecklistChecklistSettingsTest(TestCase):
 
         response = self.view(self.request, project_id=project.id)
 
-        self.assertEqual(ChecklistSettings.objects.count(), 1)
-        reference = ChecklistSettings.objects.first()
-
         self.assertEqual(response.status_code, 302)
         self.assertEqual(
             response['location'],
