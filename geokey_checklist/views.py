@@ -674,13 +674,13 @@ class ChecklistEditChecklist(LoginRequiredMixin, TemplateView): #add ChecklistOb
                 totalnumber_float = float(numberofpeople) + (float(numberofchildren) * 0.5) + (float(numberoftoddlers) * 0.3) + (float(numberofinfants) * 0.1) + (float(numberofpets) * 0.1)
                 totalnumber = int(math.ceil(totalnumber_float))
             elif checklistitemtype == "Children":
-                totalnumber = numberofchildren
+                totalnumber = int(numberofchildren)
             elif checklistitemtype == "Toddlers":
-                totalnumber = numberoftoddlers
+                totalnumber = int(numberoftoddlers)
             elif checklistitemtype == "Infants":
-                totalnumber = numberofinfants
+                totalnumber = int(numberofinfants)
             elif checklistitemtype == "Pets":
-                totalnumber = numberofpets
+                totalnumber = int(numberofpets)
             else:
                 totalnumber = 1 #for 'Custom' or 'Fixit'
 
