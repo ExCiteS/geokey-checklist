@@ -4,47 +4,48 @@ import math
 
 from braces.views import LoginRequiredMixin
 
-from datetime import timedelta
-
 from django.contrib import messages
-from django.contrib.gis.geos import GEOSGeometry
-from django.contrib.gis.geos import Point
-from django.db.models import CharField
+from django.contrib.gis.geos import GEOSGeometry, Point
 from django.http import HttpResponse
 from django.shortcuts import redirect
 from django.views.generic import TemplateView
 
 from rest_framework.views import APIView
 
-from geokey.categories.models import Category
-from geokey.categories.models import Field
-from geokey.contributions.models import Location
-from geokey.contributions.models import Observation
 from geokey.core.decorators import handle_exceptions_for_ajax
 from geokey.projects.models import Project
+from geokey.categories.models import Category, Field
+from geokey.contributions.models import Location, Observation
 
-from .base import TYPE
-from .base import ITEM_TYPE
-from .base import EXPIRY_FACTOR
-from .base import PER_TYPE
-from .base import FREQUENCY_EXPIRED_REMINDER
-from .base import REMINDER_BEFORE_EXPIRATION
-from .base import DEFAULT_ITEMS
+from .base import (
+    TYPE,
+    ITEM_TYPE,
+    EXPIRY_FACTOR,
+    PER_TYPE,
+    FREQUENCY_EXPIRED_REMINDER,
+    DEFAULT_ITEMS
+)
+from .models import Checklist, ChecklistItem, ChecklistSettings
 
-from .models import ChecklistItem
-from .models import Checklist
-from .models import ChecklistSettings
+
+error_description_checklist = 'You must be creator of the Checklist.'
+error_description_item = 'You must be creator of the Checklist Item.'
+
 
 class ChecklistObjectMixin(object):
 
     def get_context_data(self, project_id, checklist_id, **kwargs):
         try:
-            checklist = Category.objects.get_single(self.request.user, project_id, checklist_id)
+            checklist = Category.objects.get_single(
+                self.request.user,
+                project_id,
+                checklist_id
+            )
 
             if checklist.creator != self.request.user:
                 return {
-                    'error_description': 'You must be creator of the Checklist.',
-                    'error': 'Permission denied.'
+                    'error': 'Permission denied.',
+                    'error_description': error_description_checklist
                 }
             else:
                 return super(ChecklistObjectMixin, self).get_context_data(
@@ -66,8 +67,8 @@ class ChecklistItemObjectMixin(object):
 
             if checklist_item.creator != self.request.user:
                 return {
-                    'error_description': 'You must be creator of the Checklist Item.',
-                    'error': 'Permission denied.'
+                    'error': 'Permission denied.',
+                    'error_description': error_description_item
                 }
             else:
                 return super(ChecklistItemObjectMixin, self).get_context_data(
@@ -80,33 +81,41 @@ class ChecklistItemObjectMixin(object):
                 'error': 'Not found.'
             }
 
+
 class IndexPage(LoginRequiredMixin, TemplateView, ChecklistItemObjectMixin):
+
     template_name = 'checklist_index.html'
 
     def get_context_data(self, *args, **kwargs):
-        projects = Project.objects.filter(creator=self.request.user, name="MyChecklist")
+        projects = Project.objects.filter(
+            creator=self.request.user,
+            name="MyChecklist"
+        )
         project = None
-        #checklist_settings = None
+        # checklist_settings = None
         if projects:
             project = projects[0]
-            #checklist_settings = ChecklistSettings.objects.get(project=project)
+            # checklist_settings = ChecklistSettings.objects.get(project=project)
 
         categories = None
         if project:
-            categories = Category.objects.get_list(self.request.user, project.id)
-
-        itemTypeChoices = ITEM_TYPE
+            categories = Category.objects.get_list(
+                self.request.user,
+                project.id
+            )
 
         return super(IndexPage, self).get_context_data(
             project=project,
             categories=categories,
-            #checklist_settings=checklist_settings,
-            itemTypeChoices=itemTypeChoices,
+            # checklist_settings=checklist_settings,
+            itemTypeChoices=ITEM_TYPE,
             *args,
             **kwargs
         )
 
+
 class ChecklistChecklistSettings(LoginRequiredMixin, TemplateView):
+
     template_name = 'checklist_settings.html'
 
     def get_context_data(self, project_id, *args, **kwargs):
@@ -115,14 +124,14 @@ class ChecklistChecklistSettings(LoginRequiredMixin, TemplateView):
             checklist_settings = ChecklistSettings.objects.get(project=project)
         except:
             checklist_settings = None
-        frequencyExpiredReminderChoices = FREQUENCY_EXPIRED_REMINDER
-        #reminderBeforeExpirationChoices = REMINDER_BEFORE_EXPIRATION
+
+        # reminderBeforeExpirationChoices = REMINDER_BEFORE_EXPIRATION
 
         return super(ChecklistChecklistSettings, self).get_context_data(
             project=project,
             checklist_settings=checklist_settings,
-            frequencyExpiredReminderChoices=frequencyExpiredReminderChoices,
-            #reminderBeforeExpirationChoices=reminderBeforeExpirationChoices,
+            frequencyExpiredReminderChoices=FREQUENCY_EXPIRED_REMINDER,
+            # reminderBeforeExpirationChoices=reminderBeforeExpirationChoices,
             *args,
             **kwargs
         )
@@ -134,17 +143,18 @@ class ChecklistChecklistSettings(LoginRequiredMixin, TemplateView):
         except:
             checklist_settings = None
 
-        if checklist_settings != None:
-
+        if checklist_settings is not None:
             reminderson_radio = self.request.POST.get('checklistRemindersOn')
             reminderson = True
             if reminderson_radio == "No":
                 reminderson = False
-            #frequencybeforeexpiration = self.request.POST.get('checklistReminderBeforeExpiration')
-            frequencyonexpiration = self.request.POST.get('checklistReminderAfterExpiration')
+            # frequencybeforeexpiration = self.request.POST.get('checklistReminderBeforeExpiration')
+            frequencyonexpiration = self.request.POST.get(
+                'checklistReminderAfterExpiration'
+            )
 
             setattr(checklist_settings, "reminderson", reminderson)
-            #setattr(checklist_settings, "frequencybeforeexpiration", frequencybeforeexpiration)
+            #s etattr(checklist_settings, "frequencybeforeexpiration", frequencybeforeexpiration)
             setattr(checklist_settings, "frequencyonexpiration", frequencyonexpiration)
             checklist_settings.save()
 
@@ -566,12 +576,12 @@ class ChecklistAddChecklist(TemplateView):
                 elif dict_checklistitemtype == "Pets":
                     totalnumber = int(numberofpets)
                 else:
-                    totalnumber = 1 #for 'Custom' or 'Fixit'
+                    totalnumber = 1  # for 'Custom' or 'Fixit'
 
                 if dict_pertype == "location":
-                    quantity = int(dict_quantityfactor) # this is for an item per household (e.g. first aid kit)
+                    quantity = int(dict_quantityfactor)  # this is for an item per household (e.g. first aid kit)
                 else:
-                    quantity = totalnumber * int(dict_quantityfactor) # this is for an item per member of household (e.g. water)
+                    quantity = totalnumber * int(dict_quantityfactor)  # this is for an item per member of household (e.g. water)
 
                 if quantity > 0:
                     field = Field.create(dict_name, dict_name, "", False, category, 'TextField')
@@ -582,7 +592,7 @@ class ChecklistAddChecklist(TemplateView):
                         category=category,
                         field=field,
                         creator=creator,
-                        #checklisttype=checklisttype,
+                        # checklisttype=checklisttype,
                         checklistitemdescription=dict_checklistitemdescription,
                         checklistitemurl=dict_checklistitemurl,
                         checklistitemtype=dict_checklistitemtype,
@@ -599,13 +609,18 @@ class ChecklistAddChecklist(TemplateView):
         messages.success(self.request, successful_message)
         return redirect('geokey_checklist:index', checklist_id=category.id)
 
+
 class ChecklistEditChecklist(LoginRequiredMixin, TemplateView): #add ChecklistObjectMixin back later...
     template_name = 'checklist_edit_checklist.html'
 
     def get_context_data(self, project_id, checklist_id, *args, **kwargs):
-        category = Category.objects.get_single(self.request.user, project_id, checklist_id)
+        category = Category.objects.get_single(
+            self.request.user,
+            project_id,
+            checklist_id
+        )
         project = Project.objects.get_single(self.request.user, project_id)
-        checklist = Checklist.objects.get(project=project,category=category)
+        checklist = Checklist.objects.get(project=project, category=category)
 
         return super(ChecklistEditChecklist, self).get_context_data(
             category=category,
@@ -620,11 +635,21 @@ class ChecklistEditChecklist(LoginRequiredMixin, TemplateView): #add ChecklistOb
         name = self.request.POST.get('checklistName')
         description = self.request.POST.get('checklistDescription')
 
-        category = Category.objects.get_single(self.request.user, project_id, checklist_id)
+        category = Category.objects.get_single(
+            self.request.user,
+            project_id,
+            checklist_id
+        )
         project = Project.objects.get_single(self.request.user, project_id)
-        checklist = Checklist.objects.get(project=project,category=category)
+        checklist = Checklist.objects.get(
+            project=project,
+            category=category
+        )
 
-        observation = Observation.objects.get(project=project,category=category)
+        observation = Observation.objects.get(
+            project=project,
+            category=category
+        )
         location = observation.location
 
         numberofpeople = self.request.POST.get('checklistNumPeople')
@@ -660,9 +685,13 @@ class ChecklistEditChecklist(LoginRequiredMixin, TemplateView): #add ChecklistOb
         setattr(location, "geometry", geometry)
         location.save()
 
-        #now loop through every checklist item in this checklist and update the quantity based on the new number of people, etc.
-        checklistItems = ChecklistItem.objects.filter(project=project, category=category)
-        for checklistItem in checklistItems:
+        # now loop through every checklist item in this checklist and update the quantity based on the new number of people, etc.
+        checklist_items = ChecklistItem.objects.filter(
+            project=project,
+            category=category
+        )
+
+        for checklistItem in checklist_items:
 
             checklistitemtype = checklistItem.checklistitemtype
             quantityfactor = checklistItem.quantityfactor
@@ -682,12 +711,12 @@ class ChecklistEditChecklist(LoginRequiredMixin, TemplateView): #add ChecklistOb
             elif checklistitemtype == "Pets":
                 totalnumber = int(numberofpets)
             else:
-                totalnumber = 1 #for 'Custom' or 'Fixit'
+                totalnumber = 1  # for 'Custom' or 'Fixit'
 
             if quantityfactor == 0:
-                quantity = 1 # this is for an item per household (e.g. first aid kit)
+                quantity = 1  # item per household (e.g. first aid kit)
             else:
-                quantity = totalnumber * quantityfactor # this is for an item per member of household (e.g. water)
+                quantity = totalnumber * quantityfactor  # item per member
 
             setattr(checklistItem, "quantity", quantity)
             checklistItem.save()
@@ -696,7 +725,10 @@ class ChecklistEditChecklist(LoginRequiredMixin, TemplateView): #add ChecklistOb
         messages.success(self.request, successful_message)
         return redirect('geokey_checklist:index', checklist_id=checklist_id)
 
-class ChecklistDeleteChecklist(LoginRequiredMixin, ChecklistObjectMixin, TemplateView):
+
+class ChecklistDeleteChecklist(LoginRequiredMixin, ChecklistObjectMixin,
+                               TemplateView):
+
     template_name = 'base.html'
 
     def get(self, request, project_id, checklist_id):
@@ -704,7 +736,7 @@ class ChecklistDeleteChecklist(LoginRequiredMixin, ChecklistObjectMixin, Templat
         category = context.pop('checklist', None)
 
         project = Project.objects.get_single(self.request.user, project_id)
-        checklist = Checklist.objects.get(project=project,category=category)
+        checklist = Checklist.objects.get(project=project, category=category)
 
         successful_message = checklist.name + " has been deleted."
 
