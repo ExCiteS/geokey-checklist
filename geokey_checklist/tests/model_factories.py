@@ -3,22 +3,23 @@ import factory
 
 from geokey.categories.tests.model_factories import CategoryFactory
 from geokey.categories.tests.model_factories import FieldFactory
-from geokey.projects.tests.model_factories import ProjectF
-from geokey.users.tests.model_factories import UserF
+from geokey.projects.tests.model_factories import ProjectFactory
+from geokey.users.tests.model_factories import UserFactory
 
 from ..models import Checklist
 from ..models import ChecklistItem
 from ..models import ChecklistSettings
+
 
 class ChecklistFactory(factory.django.DjangoModelFactory):
 
     class Meta:
         model = Checklist
 
-    name = factory.Sequence(lambda n: 'Checklist %d' %n)
-    project = factory.SubFactory(ProjectF)
+    name = factory.Sequence(lambda n: 'Checklist %d' % n)
+    project = factory.SubFactory(ProjectFactory)
     category = factory.SubFactory(CategoryFactory)
-    creator = factory.SubFactory(UserF)
+    creator = factory.SubFactory(UserFactory)
 
     description = ""
     checklisttype = 'Blank'
@@ -27,19 +28,20 @@ class ChecklistFactory(factory.django.DjangoModelFactory):
     numberoftoddlers = 1
     numberofinfants = 1
     numberofpets = 1
-    latitude =  47.6097
+    latitude = 47.6097
     longitude = -122.3331
+
 
 class ChecklistItemFactory(factory.django.DjangoModelFactory):
 
     class Meta:
         model = ChecklistItem
 
-    name = factory.Sequence(lambda n: 'ChecklistItem %d' %n)
-    project = factory.SubFactory(ProjectF)
+    name = factory.Sequence(lambda n: 'ChecklistItem %d' % n)
+    project = factory.SubFactory(ProjectFactory)
     category = factory.SubFactory(CategoryFactory)
     field = factory.SubFactory(FieldFactory)
-    creator = factory.SubFactory(UserF)
+    creator = factory.SubFactory(UserFactory)
 
     checklistitemdescription = ""
     checklistitemurl = ""
@@ -52,13 +54,14 @@ class ChecklistItemFactory(factory.django.DjangoModelFactory):
     expiry = datetime.date(2018, 01, 03)
     haveit = False
 
+
 class ChecklistSettingsFactory(factory.django.DjangoModelFactory):
 
     class Meta:
         model = ChecklistSettings
 
-    project = factory.SubFactory(ProjectF)
+    project = factory.SubFactory(ProjectFactory)
 
     reminderson = True
     frequencyonexpiration = 'twice'
-    #frequencybeforeexpiration = 180
+    # frequencybeforeexpiration = 180

@@ -5,12 +5,11 @@ from django.contrib.messages.storage.fallback import FallbackStorage
 from django.template.loader import render_to_string
 from django.contrib.sites.shortcuts import get_current_site
 
-from geokey.projects.tests.model_factories import ProjectF
-from geokey.users.tests.model_factories import UserF
+from geokey.projects.tests.model_factories import ProjectFactory
+from geokey.users.tests.model_factories import UserFactory
 
 from geokey import version
 
-from .model_factories import ChecklistSettingsFactory
 from .model_factories import ChecklistFactory
 
 from ..models import ChecklistSettings
@@ -28,6 +27,7 @@ from ..views import (
     ChecklistChecklistSettings
 )
 
+
 class IndexPageTest(TestCase):
 
     def setUp(self):
@@ -35,7 +35,7 @@ class IndexPageTest(TestCase):
         self.request = HttpRequest()
         self.request.method = 'GET'
         self.request.user = AnonymousUser()
-        #self.checklist = ChecklistFactory.create()
+        # self.checklist = ChecklistFactory.create()
 
     def test_get_with_anonymous(self):
         response = self.view(self.request)
@@ -44,10 +44,10 @@ class IndexPageTest(TestCase):
         self.assertEqual(response['location'], '/admin/account/login/?next=')
 
     def test_get_with_some_dude(self):
-        user = UserF.create()
+        user = UserFactory.create()
         self.request.user = user
         checklist = ChecklistFactory.create(**{'creator': user})
-        #self.checklist = checklist
+        # self.checklist = checklist
 
         response = self.view(self.request).render()
 
@@ -57,12 +57,13 @@ class IndexPageTest(TestCase):
                 'user': user,
                 'PLATFORM_NAME': get_current_site(self.request).name,
                 'GEOKEY_VERSION': version.get_version(),
-                #'projects': [project]
+                # 'projects': [project]
                 'checklist_id': checklist.id
             }
         )
-        #self.assertEqual(unicode(response.content), rendered) #one returns a page with just the blank expired list, while the other returns all of the lists...
-        self.assertEqual(response.status_code, 200) #let's just consider it a success if the user successfully gets the page back.
+        # self.assertEqual(unicode(response.content), rendered) #one returns a page with just the blank expired list, while the other returns all of the lists...
+        self.assertEqual(response.status_code, 200)  # let's just consider it a success if the user successfully gets the page back.
+
 
 class ChecklistChecklistSettingsTest(TestCase):
 
@@ -71,7 +72,7 @@ class ChecklistChecklistSettingsTest(TestCase):
         self.request = HttpRequest()
         self.request.method = 'GET'
         self.request.user = AnonymousUser()
-        self.project = ProjectF.create()
+        self.project = ProjectFactory.create()
 
     def test_get_with_anonymous(self):
         response = self.view(self.request, project_id=self.project.id)
@@ -88,8 +89,8 @@ class ChecklistChecklistSettingsTest(TestCase):
         self.assertEqual(ChecklistSettings.objects.count(), 0)
 
     def test_get_with_some_dude(self):
-        user = UserF.create()
-        project = ProjectF.create(**{'creator': user})
+        user = UserFactory.create()
+        project = ProjectFactory.create(**{'creator': user})
 
         setattr(self.request, 'session', 'session')
         messages = FallbackStorage(self.request)
@@ -107,12 +108,12 @@ class ChecklistChecklistSettingsTest(TestCase):
                 'project': project
             }
         )
-        #self.assertEqual(unicode(response.content), rendered)
+        # self.assertEqual(unicode(response.content), rendered)
         self.assertEqual(response.status_code, 200)
 
     def test_post_with_some_dude(self):
-        user = UserF.create()
-        project = ProjectF.create(**{'creator': user})
+        user = UserFactory.create()
+        project = ProjectFactory.create(**{'creator': user})
 
         self.request.method = 'POST'
         self.request.POST = {
