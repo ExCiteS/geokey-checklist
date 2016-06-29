@@ -1,11 +1,18 @@
-from geokey.extensions.base import register
+"""Main initialisation for extension."""
 
 VERSION = (0, 1, 0)
 __version__ = '.'.join(map(str, VERSION))
 
-register(
-    'geokey_checklist',
-    'Checklist',
-    display_admin=True,
-    superuser=False
-)
+
+try:
+    from geokey.extensions.base import register
+
+    register(
+        'geokey_checklist',
+        'Checklist',
+        display_admin=True,
+        superuser=False,
+        version=__version__
+    )
+except BaseException:
+    print 'Please install GeoKey first'
