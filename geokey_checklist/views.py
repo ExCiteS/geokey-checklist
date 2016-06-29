@@ -452,7 +452,7 @@ class ChecklistAddChecklist(TemplateView):
 
         #not the most robust method; need to rework...
         if int(project_id) == 999999:
-            project = Project.create("MyChecklist", "", True, 'auth', creator) #can be true, auth, or false
+            project = Project.create("MyChecklist", "", True, False, 'auth', creator) #can be true, auth, or false
             checklist_settings = ChecklistSettings.objects.create(
                 project=project,
                 reminderson=True,
